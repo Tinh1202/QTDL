@@ -4,17 +4,13 @@
  */
 package computer_management;
 
+import java.sql.SQLException;
+
 /**
  *
  * @author vntin
  */
 public class Computer_Management {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-    }
-    
+    public static void main(String[] args){       
+    }       
 }
