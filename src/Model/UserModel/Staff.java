@@ -1,4 +1,4 @@
-package Model;
+package Model.UserModel;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -9,7 +9,7 @@ package Model;
  *
  * @author vntin
  */
-import Model.Person;
+import Model.UserModel.Person;
 import java.util.ArrayList;
 
 public class Staff extends Person {
