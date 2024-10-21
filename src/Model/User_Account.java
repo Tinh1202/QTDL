@@ -43,6 +43,10 @@ public class User_Account { // account login
            if false do ... 
         */ 
     } 
-    
-   
+
+    public void WriteLog(){ // write log while users login
+        /*
+            code *
+        */
+    }
 }
