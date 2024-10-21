@@ -31,7 +31,7 @@ public class Person {
     }
     
     
-    // create Person(parameters)
+    // create Person(parameters) / Object
     /*
         create code
     */
@@ -50,13 +50,7 @@ public class Person {
     create setter, getter 
     create code 
     */
-    
-    
-    //create function returns Person object
-    /*
-        code
-    */
-    
+   
     @Override
     // return String Id, full name, birthdate, phone
     public String toString(){

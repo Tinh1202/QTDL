@@ -38,9 +38,5 @@ public class Staff extends Person {
         return null; // return ..., position
     }
     
-    private ArrayList ListStaff () {
-        return null; // return list of staff
-    }
-    
     
 }
