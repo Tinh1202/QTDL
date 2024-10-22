@@ -22,7 +22,11 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
     
     
     Product_Receipt() {
-        
+        id_prn = new String("");
+        id_staff = new String("");
+        id_supplier = new String("");
+        date_import = LocalDateTime.of(2023, 11, 28, 10, 30, 0);
+        ListDetailPRN = new ArrayList<Detail_PRN>();
     }
 
     Product_Receipt(String id_prn, String id_supplier, String id_staff, LocalDate localdate, LocalTime localtime) {
@@ -32,19 +36,39 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
         this.id_supplier = new String(id_supplier);
     }
     
-    Product_Receipt(Object pr){
-        
+    Product_Receipt(Object product_Rece){
+        if(product_Rece instanceof Product_Receipt){
+            Product_Receipt pr = new Product_Receipt(product_Rece);
+            this.id_prn = new String(pr.id_prn);
+            this.id_staff = new String(pr.id_staff);
+            this.id_supplier = new String(pr.id_supplier);
+        } else{
+            Product_Receipt pr = new Product_Receipt();
+            this.id_prn = new String(pr.id_prn);
+            this.id_staff = new String(pr.id_staff);
+            this.id_supplier = new String(pr.id_supplier);
+        }
     }
-    
+
     //define getter, setter
     private String getId_PRN(){
         return new String(this.id_prn);
     }
-    
     private void setId_PRN(String id_prn){
         this.id_prn = new String(id_prn);
     }
-    
+    private String getId_staff(){
+        return new String(this.id_staff);
+    }
+    private void setId_staff(String id_staff){
+        this.id_staff = new String(id_staff);
+    }
+    private String getId_supplier(){
+        return new String(this.id_supplier);
+    }
+    private void setId_supplier(String id_supplier){
+        this.id_supplier = new String(this.id_supplier);
+    }
     /*
         code *
     */
