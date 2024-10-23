@@ -12,7 +12,7 @@ import Model.DeviceModel.Country;
 
 // class nhà cung cấp
 public class Supplier {
-	private String ID_supplier;       // Mã nhà cung cấp
+    private String ID_supplier;       // Mã nhà cung cấp
     private String name_supplier;     // Tên nhà cung cấp
     private String address_supplier;  // Địa chỉ nhà cung cấp
     private String phone_supplier;    // Số điện thoại nhà cung cấp
@@ -44,12 +44,19 @@ public class Supplier {
     // CONSTRUCTOR SAO CHÉP
     Supplier(Object supplier) {
         if (supplier instanceof Supplier) {
-            Supplier s = (Supplier) supplier;
+            Supplier s = new Supplier(supplier);
             this.ID_supplier = s.getIDSupplier();
             this.name_supplier = s.getNameSupplier();
             this.address_supplier = s.getAddressSupplier();
             this.phone_supplier = s.getPhoneSupplier();
             this.country = s.getCountry();
+        } else {
+            Supplier s = new Supplier();
+            this.ID_supplier = new String(s.ID_supplier);
+            this.name_supplier = new String(s.name_supplier);
+            this.address_supplier = new String(s.address_supplier);
+            this.phone_supplier = new String(s.phone_supplier);
+            this.country = new Country(s.country);
         }
     }
     

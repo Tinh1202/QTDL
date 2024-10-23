@@ -4,6 +4,7 @@
  */
 package Model.DeviceModel;
 import Model.DeviceModel.Device_Type;
+import java.util.*;
 /**
  *
  * @author vntin
@@ -16,6 +17,7 @@ public class Device {
     private Specification spec;  // thông số kỹ thuật
     private Device_Type dv;  // loại thiết bị
     private double price; // giá thành
+//    private ArrayList<Specifications> ListSpec;  // thêm vào array các thông số kỹ thuật
     
     //CONTRUCTOR KHÔNG THAM SỐ -->Khởi tạo các giá trị ban đầu
     Device () {
@@ -33,7 +35,7 @@ public class Device {
             , double price){
     	this.id_device = new String(id_device);
         this.name_device = new String(name_device);
-        this.spec = spec;
+        this.spec = spec;  // đổi thành arrayList
         this.dv = dv;
         this.price = price;
     }
@@ -43,7 +45,7 @@ public class Device {
             Device dev = (Device) device;
             this.id_device = new String(dev.getIdDevice()); // Lấy giá trị id_device từ đối tượng dev gán cho hiện tại
             this.name_device = new String(dev.getNameDevice());
-            this.spec = dev.getSpec();
+            this.spec = dev.getSpec();  // tương tự
             this.dv = dev.getDeviceType();
             this.price = dev.getPrice();
         }

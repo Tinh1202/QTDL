@@ -53,6 +53,7 @@ public class Device_Type {
         this.name_type = new String(name_type);
     }
     
+    @Override
     public String toString(){
         Device_Type dv = new Device_Type(this);
         return "Id device type: " + dv.getIdType() + "\n"

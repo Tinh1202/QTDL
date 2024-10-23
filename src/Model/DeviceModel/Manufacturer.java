@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Model.DeviceModel;
-import Model.DeviceModel.Country;
+import Model.DeviceModel.Country.*;
 import java.util.*;
 /**
  *
@@ -19,7 +19,7 @@ public class Manufacturer {
     Manufacturer() {
     	this.id_manuf = new String("");
     	this.name_manuf = new String("");
-    	this.country = new Country();
+    	this.country = new Country("");
     }
     // Constructor có tham số
     Manufacturer(String id_manuf, String name_manuf, Country country){
@@ -30,14 +30,28 @@ public class Manufacturer {
     // Constructor sao chép
     Manufacturer(Object manufacturer){
     	if (manufacturer instanceof Manufacturer) { //Kiểm tra đối tượng device có phải kiểu Device
-            Manufacturer manuf = (Manufacturer) manufacturer;
-            this.id_manuf = new String(manuf.getIdManuf());
-            this.name_manuf = new String(manuf.getNameManuf());
-            this.country = manuf.getCountry();
+            Manufacturer manuf = new Manufacturer(manufacturer);
+            this.id_manuf = new String(manuf.id_manuf);
+            this.name_manuf = new String(manuf.name_manuf);
+            this.country = new Country(manuf.country);
+        } else {
+            Manufacturer manuf = new Manufacturer();
+            this.id_manuf = new String(manuf.id_manuf);
+            this.name_manuf = new String(manuf.name_manuf);
+            this.country = new Country();
         }
     }
     
     //GETTER VÀ SETTER
+    
+    private String getIdManuf(){
+        return new String(this.id_manuf);
+    }
+    
+    private void setIdManuf(String id_manuf){
+        this.id_manuf = new String(id_manuf);
+    }
+    
     private String getNameManuf() {
         return new String(this.name_manuf);
     }
