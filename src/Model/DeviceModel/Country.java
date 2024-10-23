@@ -33,6 +33,8 @@ public class Country {
             
         } else {
             Country c = new Country();
+            this.id_country = new String(c.id_country);
+            this.name_country = new String(c.name_country);
         }
     }
     
