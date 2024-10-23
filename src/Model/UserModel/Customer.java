@@ -8,33 +8,50 @@ import java.time.LocalDate;
  *
  * @author vntin
  */
-public class Customer extends Person{
+import java.time.LocalDate;
+
+public class Customer extends Person {
     private String address;
-    
-    Customer(){
+
+    // Mặc định constructor
+    public Customer() {
         super();
-        this.address = new String("");
+        this.address = "";
     }
-    
-    Customer(String id, String fullname, String phone_number, LocalDate birthdate, String address){
-        // super(id, fullname, phone_number, birthdate);
-        this.address = new String(address);
+
+    // Tham số constructor
+    public Customer(String id, String fullname, String phone_number, LocalDate birthdate, String address) {
+        super(id, fullname, phone_number, birthdate);
+        this.address = address;
     }
-    
-    Customer(Object customer){
-        
+
+    // Sao chép constructor
+    public Customer(Customer customer) {
+        super(customer.getId(), customer.getFullname(), customer.getPhone_number(), customer.getBirthdate());
+        this.address = customer.getAddress();
     }
-    
-    // define setter, getter
-    
+
+    // Getter for address
+    public String getAddress() {
+        return address;
+    }
+
+    // Setter for address
+    public void setAddress(String address) {
+        this.address = address;
+    }
     /*
     code *
     */
-    
+
     @Override
-    public String toString(){
-        return null; // id, fullname, phone, birthdata, address
+    public String toString() {
+        return "Customer{" +
+                "id='" + getId() + '\'' +
+                ", fullname='" + getFullname() + '\'' +
+                ", phone_number='" + getPhone_number() + '\'' +
+                ", birthdate=" + getBirthdate() +
+                ", address='" + address + '\'' +
+                '}';
     }
-    
-    
 }
