@@ -19,8 +19,8 @@ public class Detail_DeliveryNote { // chi tiết phiếu xuất kho cho một th
     Detail_DeliveryNote() {
         id_dn = new String("");
         id_device = new String("");
-        quantity = 1;
-        price = 1;
+        quantity = 0;
+        price = 0.0;
     }
 
     Detail_DeliveryNote(String id_dn, String id_device, int quantity, double price) {
@@ -47,8 +47,9 @@ public class Detail_DeliveryNote { // chi tiết phiếu xuất kho cho một th
     }
     
     private double Calculate_TotalPrice(){ // tính tổng đơn giá = số lượng * đơn giá
-        return (double) quantity * price;
+        return (double) this.getQuantity() * this.getPrice();
     }
+    
     private String getId_dn(){
         return new String(this.id_dn);
     }
@@ -77,7 +78,10 @@ public class Detail_DeliveryNote { // chi tiết phiếu xuất kho cho một th
     
     @Override
     public String toString(){
-        return null;
+        return "Id Delivery Note: " + this.getId_dn() + "\n"
+                + "Id device: " + this.getId_device() + "\n"
+                + "Quantity: " + this.getQuantity() + "\n"
+                + "Price: " + this.getPrice() + "\n";
     }
     
 

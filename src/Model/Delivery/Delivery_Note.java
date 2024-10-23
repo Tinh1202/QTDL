@@ -5,6 +5,7 @@
 package Model.Delivery;
 import Model.DeviceModel.Device;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
@@ -24,7 +25,9 @@ public class Delivery_Note { // class phiếu xuất kho sản phẩm đến kh�
         this.id_dn = new String("");
         this.id_staff = new String("");
         this.id_customer = new String("");
-        this.datetime_shipment = LocalDateTime.of(2023, 11, 28, 10, 30, 0);
+        LocalDate ld = LocalDate.of(1990, 01, 01);
+        LocalTime lt = LocalTime.of(01, 01, 01);
+        this.datetime_shipment = LocalDateTime.of(ld, lt);
         this.ListDetailDN = new ArrayList<Detail_DeliveryNote>();
     }
 
@@ -48,33 +51,41 @@ public class Delivery_Note { // class phiếu xuất kho sản phẩm đến kh�
     private String getId_Dn(){
         return new String(this.id_dn);
     }
+    
     private void setId_Dn(String id_dn){
         this.id_dn = new String(id_dn);
     }
+    
     private String getId_Staff(){
         return new String(this.id_staff);
     }
+    
     private void setId_Staff(String id_staff){
         this.id_staff = new String(id_staff);
     }
+    
     private String getId_Customer(){
         return new String(this.id_customer);
     }
+    
     private void setIdCustomer(String id_customer){
         this.id_customer = new String(id_customer);
     }
-//    private LocalDateTime getDatetimeShipment(){
-//        return new LocalDateTime(this.datetime_shipment);
-//    }
-//    private LocalDateTime setDatetimeShipment(){   
-//    }
     
+    private LocalDateTime getLocalDateTime(){
+        return this.datetime_shipment;
+    }
     
-    
-    
+    private void setLocalDateTime(LocalDateTime ldt){
+        this.datetime_shipment = ldt;
+    }
+   
     
     @Override
     public String toString(){
-        return null;
+        return "Id delivery note: " + this.getId_Dn() + "\n"
+                + "Id staff: " + this.getId_Staff() + "\n"
+                + "Id Customer: " + this.getId_Customer() + "\n"
+                + "Date get delivery note: " + this.datetime_shipment.format(DateTimeFormatter.ISO_DATE);
     }
 }

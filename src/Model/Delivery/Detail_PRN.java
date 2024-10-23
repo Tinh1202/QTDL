@@ -64,18 +64,18 @@ public class Detail_PRN { // class chi tiết phiếu nhập
     private void setPrice(double price){
         price = price;
     }
-    /**
-     *
-     * @return
-     */
+
 
     
     @Override
     public String toString(){
-        return null;
+        return "id: " + this.getId_prn() + "\n"
+                + "id device: " + this.getId_device() + "\n"
+                + "Quantity: " + this.getNumber() + "\n"
+                + "Total price: " + this.totalPrice() + "\n";
     }
     
     private double totalPrice(){ // tính giá của thiết bị * số lượng
-        return (double) price * number;
+        return (double) this.getPrice() * this.getNumber();
     }
 }

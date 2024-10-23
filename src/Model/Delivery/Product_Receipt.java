@@ -6,6 +6,7 @@ package Model.Delivery;
 import Model.UserModel.Staff;
 import java.time.LocalDateTime;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -22,18 +23,27 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
     
     
     Product_Receipt() {
-        id_prn = new String("");
-        id_staff = new String("");
-        id_supplier = new String("");
-        date_import = LocalDateTime.of(2023, 11, 28, 10, 30, 0);
-        ListDetailPRN = new ArrayList<Detail_PRN>();
+        this.id_prn = new String("");
+        this.id_staff = new String("");
+        this.id_supplier = new String("");
+        LocalDate ld = LocalDate.of(1990, 01, 01);
+        LocalTime lt = LocalTime.of(01, 01, 01);
+        this.date_import = LocalDateTime.of(ld, lt);
+        this.ListDetailPRN = new ArrayList<Detail_PRN>();
     }
 
-    Product_Receipt(String id_prn, String id_supplier, String id_staff, LocalDate localdate, LocalTime localtime) {
+    Product_Receipt(String id_prn,
+            String id_supplier,
+            String id_staff,
+            LocalDate localdate,
+            LocalTime localtime,
+            ArrayList ListDetailPRN) {
+        
         this.id_prn = new String(id_prn);
         this.id_staff = new String(id_staff);
         this.date_import = LocalDateTime.of(localdate, localtime);
         this.id_supplier = new String(id_supplier);
+        this.ListDetailPRN = new ArrayList<>(ListDetailPRN);
     }
     
     Product_Receipt(Object product_Rece){
@@ -42,11 +52,15 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
             this.id_prn = new String(pr.id_prn);
             this.id_staff = new String(pr.id_staff);
             this.id_supplier = new String(pr.id_supplier);
+            this.date_import = pr.date_import;
+            this.ListDetailPRN = new ArrayList<>(pr.ListDetailPRN);
         } else{
             Product_Receipt pr = new Product_Receipt();
             this.id_prn = new String(pr.id_prn);
             this.id_staff = new String(pr.id_staff);
             this.id_supplier = new String(pr.id_supplier);
+            this.date_import = pr.date_import;
+            this.ListDetailPRN = new ArrayList<>(pr.ListDetailPRN);
         }
     }
 
@@ -69,9 +83,22 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
     private void setId_supplier(String id_supplier){
         this.id_supplier = new String(this.id_supplier);
     }
-    /*
-        code *
-    */
+    
+    private LocalDateTime getDateImport(){ // localDateTime type
+        return this.date_import; // YYYY-MM-DD HH-MM-SS
+    }
+
+    private void setDateImport(LocalDateTime ldt) {
+        this.date_import = ldt;
+    }
+    
+    private ArrayList getListDetailPRN(){
+        return new ArrayList(this.ListDetailPRN);
+    }
+    
+    private void setListDetailPRN(ArrayList ListDetailPRN){
+        this.ListDetailPRN = new ArrayList<>(ListDetailPRN);
+    }
     
     private double Total_Price(){  // return total price of devices from detail_prn list
         return 0.00;
@@ -79,7 +106,10 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
     
     @Override
     public String toString(){
-        return null;
+        return "Id: " + this.getId_PRN() + "\n"
+                + "Id staff: " + this.getId_staff() + "\n"
+                + "Id supplier: " + this.getId_supplier() + "\n"
+                + "Date: " + this.getDateImport().format(DateTimeFormatter.ISO_DATE);
     }
-    
+
 }
