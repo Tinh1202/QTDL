@@ -7,6 +7,7 @@ import java.sql.*;
 
 public class Connection {
     private final String url = "jdbc:mysql://localhost:3306/qlmt";  // Thay thế bằng thông tin đúng
+
     private final String username = "root";  // Thay thế bằng username của bạn
     private final String password = "123456789";  // Thay thế bằng mật khẩu của bạn
     
