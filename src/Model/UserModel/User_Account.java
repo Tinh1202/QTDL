@@ -95,7 +95,7 @@ public class User_Account { // account login
     }
 
     //Phương thức ghi lại nhật ký
-    public void WriteLog() {
+    private void WriteLog() {
         System.out.println("User " + this.username + " logged in at " + java.time.LocalDateTime.now());
     }
 

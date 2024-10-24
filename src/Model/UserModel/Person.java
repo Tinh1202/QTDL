@@ -13,7 +13,7 @@ import java.util.Arrays;
  *
  * @author vntin
  */
-public abstract class Person {
+public class Person {
     
     private String id;
     private String fullname;
@@ -22,61 +22,70 @@ public abstract class Person {
 
     // Mặc định constructor
     public Person() {
-        this.id = "";
-        this.fullname = "";
-        this.phone_number = "";
-        this.birthDate = LocalDate.of(1990, 1, 1);
+        this.id = new String("");
+        this.fullname = new String("");
+        this.phone_number = new String("");
+        this.birthDate = LocalDate.of(1990, 01, 01);
     }
 
     // Tham số constructor
     public Person(String id, String fullname, String phone_number, LocalDate birthDate) {
-        this.id = id;
-        this.fullname = fullname;
-        this.phone_number = phone_number;
+        this.id = new String(id);
+        this.fullname = new String(fullname);
+        this.phone_number = new String(phone_number);
         this.birthDate = birthDate;
     }
 
     // Sao chép constructor
     public Person(Person person) {
-        this.id = person.id;
-        this.fullname = person.fullname;
-        this.phone_number = person.phone_number;
-        this.birthDate = person.birthDate;
+        if (person instanceof Person) {
+            Person p = new Person(person);
+            this.id = new String(p.id);
+            this.fullname = new String(p.fullname);
+            this.phone_number = new String(p.phone_number);
+            this.birthDate = person.birthDate;
+        } else {
+            Person p = new Person();
+            this.id = new String(p.id);
+            this.fullname = new String(p.fullname);
+            this.phone_number = new String(p.phone_number);
+            this.birthDate = p.birthDate;
+        }
     }
 
     // Getter for id
     public String getId() {
-        return id;
+        return new String(this.id);
     }
 
     // Setter for id
     public void setId(String id) {
-        this.id = id;
+        this.id = new String(id);
     }
 
     // Getter for fullname
     public String getFullname() {
-        return fullname;
+        return new String(this.fullname);
     }
 
     // Setter for fullname
     public void setFullname(String fullname) {
-        this.fullname = fullname;
+        this.fullname = new String(fullname);
     }
 
     // Getter for phone_number
     public String getPhone_number() {
-        return phone_number;
+        return new String(this.phone_number);
     }
 
     // Setter for phone_number
     public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
+        this.phone_number = new String(phone_number);
     }
 
     // Getter for birthDate
     public LocalDate getBirthDate() {
-        return birthDate;
+        return this.birthDate;
     }
 
     // Setter for birthDate

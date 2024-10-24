@@ -12,19 +12,19 @@ public class Country {
     private String id_country;
     private String name_country;
     
-    Country(){ //default constructor
+    public Country(){ //default constructor
         this.id_country = new String("");
         this.name_country = new String("");
     }
     
     // constructor parameters
-    Country(String id_country, String name_country){
+    public Country(String id_country, String name_country){
         this.id_country = new String(id_country);
         this.name_country = new String(name_country);
     }
     
     // constructor object
-    Country(Object country){
+    public Country(Object country){
         if (country instanceof Country){
             Country c = new Country(country);
             
@@ -39,20 +39,20 @@ public class Country {
     }
     
     // define getter, setter
-    private String getIdCountry(){
+    public String getIdCountry(){
         return new String(this.id_country);
     }
     
-    private void setIdCountry(String id_country){
+    public void setIdCountry(String id_country){
         this.id_country = new String(id_country);
     }
     
     
-    private String getNameCountry(){
+    public String getNameCountry(){
         return new String(this.name_country);
     }
     
-    private void setNameCountry(String name_country){
+    public void setNameCountry(String name_country){
         this.name_country = new String(name_country);
     }
     

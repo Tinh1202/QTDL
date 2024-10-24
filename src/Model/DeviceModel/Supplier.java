@@ -20,7 +20,7 @@ public class Supplier {
     
     
     // CONSTRUCTOR MẶC ĐỊNH KHÔNG THAM SỐ 
-    Supplier(){
+    public Supplier(){
         this.ID_supplier = "";
         this.name_supplier = "";
         this.address_supplier = "";
@@ -30,7 +30,7 @@ public class Supplier {
     
     
     //CONSTRUCTOR CÓ THAM SỐ
-    Supplier(String ID_supplier, String name_supplier, String address_supplier, String phone_supplier, Country country) {
+    public Supplier(String ID_supplier, String name_supplier, String address_supplier, String phone_supplier, Country country) {
         this.ID_supplier = ID_supplier;
         this.name_supplier = name_supplier;
         this.address_supplier = address_supplier;
@@ -42,7 +42,7 @@ public class Supplier {
     --> code *
     */
     // CONSTRUCTOR SAO CHÉP
-    Supplier(Object supplier) {
+    public Supplier(Object supplier) {
         if (supplier instanceof Supplier) {
             Supplier s = new Supplier(supplier);
             this.ID_supplier = s.getIDSupplier();
@@ -60,48 +60,44 @@ public class Supplier {
         }
     }
     
-    private String getIDSupplier(){
+    public String getIDSupplier(){
         return new String(this.ID_supplier);
     }
     
-    private void setIDSupplier(String ID_supplier){
+    public void setIDSupplier(String ID_supplier){
         this.ID_supplier = new String(ID_supplier);
     }
     
-    private String getNameSupplier() {
+    public String getNameSupplier() {
         return new String(this.name_supplier);
     }
     
-    private void setNameSupplier(String name_supplier) {
+    public void setNameSupplier(String name_supplier) {
         this.name_supplier = new String(name_supplier);
     }
     
-    private String getAddressSupplier() {
+    public String getAddressSupplier() {
         return new String(this.address_supplier);
     }
     
-    private void setAddressSupplier(String address_supplier) {
+    public void setAddressSupplier(String address_supplier) {
         this.address_supplier = new String(address_supplier);
     }
     
-    private String getPhoneSupplier() {
+    public String getPhoneSupplier() {
         return new String(this.phone_supplier);
     }
     
-    private void setPhoneSupplier(String phone_supplier) {
+    public void setPhoneSupplier(String phone_supplier) {
         this.phone_supplier = new String(phone_supplier);
     }
     
-    private Country getCountry() {
+    public Country getCountry() {
         return new Country(this.country);  // Country --> constructor sao chép
     }
-    private void setCountry(Country country) {
+    public void setCountry(Country country) {
         this.country = new Country(country);  
     }
-    /*
-        create funcs setter, getter
-    code *
-    */
     
     @Override
     public String toString(){ // return id: id; name: name; phone: phone; address: address

@@ -14,17 +14,17 @@ public class Device_Type {
     
     // create constructor
 
-    Device_Type() {
+    public Device_Type() {
         this.id_type = new String("");
         this.name_type = new String("");
     }
     
-    Device_Type(String id_type, String name_type){
+    public Device_Type(String id_type, String name_type){
         this.id_type = new String(id_type);
         this.name_type = new String(name_type);
     }
     
-    Device_Type(Object device_type){
+    public Device_Type(Object device_type){
         if (device_type instanceof Device_Type){
             Device_Type dv = new Device_Type(device_type);
             
@@ -37,19 +37,19 @@ public class Device_Type {
         }
     }
     
-    private String getIdType(){
+    public String getIdType(){
         return new String(this.id_type);
     }
     
-    private void setIdType(String name_type){
+    public void setIdType(String name_type){
         this.id_type = new String(name_type);
     }
     
-    private String getNameType(){
+    public String getNameType(){
         return new String(this.name_type);
     }
     
-    private void setNameType(String name_type){
+    public void setNameType(String name_type){
         this.name_type = new String(name_type);
     }
     

@@ -18,19 +18,19 @@ public class Detail_PRN { // class chi tiết phiếu nhập
     /*
         create constructor
     */
-    Detail_PRN(){
+    public Detail_PRN(){
         id_prn = new String("");
         id_device = new String("");
         number = 1;
         price = 1;
     }
-    Detail_PRN(String id_prn, String id_device, int number, double price){
+    public Detail_PRN(String id_prn, String id_device, int number, double price){
         this.id_prn = new String(id_prn);
         this.id_device = new String(id_device);
         this.number = number;
         this.price = price;
     }
-    Detail_PRN(Detail_PRN dp){
+    public Detail_PRN(Detail_PRN dp){
         this.id_prn = new String(dp.id_prn);
         this.id_device = new String(dp.id_device);
         this.number = dp.number;
@@ -40,28 +40,28 @@ public class Detail_PRN { // class chi tiết phiếu nhập
     /*
         define getter, setter funcs
     */
-    private String getId_prn(){
+    public String getId_prn(){
         return new String(this.id_prn);
     }
-    private void setId_prn(String id_prn){
+    public void setId_prn(String id_prn){
         this.id_prn = new String(id_prn);
     }
-    private String getId_device(){
+    public String getId_device(){
         return new String(this.id_device);
     }
-    private void setId_device(String id_device){
+    public void setId_device(String id_device){
         this.id_device = new String(id_device);
     }
-    private int getNumber(){
+    public int getNumber(){
         return number;
     }
-    private void setNumber(int number){
+    public void setNumber(int number){
         number = number;
     }
-    private double getPrice(){
+    public double getPrice(){
         return price;
     }
-    private void setPrice(double price){
+    public void setPrice(double price){
         price = price;
     }
 

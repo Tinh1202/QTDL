@@ -11,14 +11,14 @@ package Model.UserModel;
  */
 import Model.UserModel.Person;
 import java.util.ArrayList;
-
+import java.time.*;
 public class Staff extends Person {
     private String position;
 
     // Mặc định constructor
     public Staff() {
         super();
-        this.position = "";
+        this.position = new String("");
     }
 
     // Tham số constructor
@@ -40,12 +40,12 @@ public class Staff extends Person {
     // Getter for position
    
     public String getPosition() {
-        return position;
+        return new String(this.position);
     }
 
     // Setter for position
     public void setPosition(String position) {
-        this.position = position;
+        this.position = new String(position);
     }
 
     // Override toString method

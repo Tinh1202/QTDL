@@ -16,21 +16,21 @@ public class Detail_DeliveryNote { // chi tiết phiếu xuất kho cho một th
 
     
     // default constructor
-    Detail_DeliveryNote() {
+    public Detail_DeliveryNote() {
         id_dn = new String("");
         id_device = new String("");
         quantity = 0;
         price = 0.0;
     }
 
-    Detail_DeliveryNote(String id_dn, String id_device, int quantity, double price) {
+    public Detail_DeliveryNote(String id_dn, String id_device, int quantity, double price) {
         this.id_dn = new String(id_dn);
         this.id_device = new String(id_device);
         this.quantity = quantity;
         this.price = price;
     }
     
-    Detail_DeliveryNote(Object detail_dn){
+    public Detail_DeliveryNote(Object detail_dn){
         if(detail_dn instanceof Detail_DeliveryNote){
             Detail_DeliveryNote ddn = new Detail_DeliveryNote(detail_dn);
             this.id_dn = new String(ddn.id_dn);
@@ -50,29 +50,29 @@ public class Detail_DeliveryNote { // chi tiết phiếu xuất kho cho một th
         return (double) this.getQuantity() * this.getPrice();
     }
     
-    private String getId_dn(){
+    public String getId_dn(){
         return new String(this.id_dn);
     }
-    private void setId_dn(String id_dn){
+    public void setId_dn(String id_dn){
         this.id_dn = new String(id_dn);
     }
-    private String getId_device(){
+    public String getId_device(){
         return new String(this.id_device);
     }
-    private void setId_device(String id_device){
+    public void setId_device(String id_device){
         this.id_dn = new String(id_device);
     }
-    private int getQuantity(){
+    public int getQuantity(){
         return quantity;
     }
-    private void setQuantity(int quantity){
-        quantity = quantity;
+    public void setQuantity(int quantity){
+        this.quantity = quantity;
     }
-    private double getPrice(){
+    public double getPrice(){
         return price;
     }
-    private void setPrice(double price){
-        price = price;
+    public void setPrice(double price){
+        this.price = price;
     }
     
     
@@ -83,15 +83,5 @@ public class Detail_DeliveryNote { // chi tiết phiếu xuất kho cho một th
                 + "Quantity: " + this.getQuantity() + "\n"
                 + "Price: " + this.getPrice() + "\n";
     }
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
     
 }

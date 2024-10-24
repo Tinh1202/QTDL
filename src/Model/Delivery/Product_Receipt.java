@@ -22,7 +22,7 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
     private ArrayList<Detail_PRN> ListDetailPRN; // danh sách các chi tiết phiếu
     
     
-    Product_Receipt() {
+    public Product_Receipt() {
         this.id_prn = new String("");
         this.id_staff = new String("");
         this.id_supplier = new String("");
@@ -32,21 +32,21 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
         this.ListDetailPRN = new ArrayList<Detail_PRN>();
     }
 
-    Product_Receipt(String id_prn,
+    public Product_Receipt(String id_prn,
             String id_supplier,
             String id_staff,
             LocalDate localdate,
             LocalTime localtime,
             ArrayList ListDetailPRN) {
         
-        this.id_prn = new String(id_prn);
+        this.id_prn = new String(id_prn); 
         this.id_staff = new String(id_staff);
         this.date_import = LocalDateTime.of(localdate, localtime);
         this.id_supplier = new String(id_supplier);
         this.ListDetailPRN = new ArrayList<>(ListDetailPRN);
     }
     
-    Product_Receipt(Object product_Rece){
+    public Product_Receipt(Object product_Rece){
         if(product_Rece instanceof Product_Receipt){
             Product_Receipt pr = new Product_Receipt(product_Rece);
             this.id_prn = new String(pr.id_prn);
@@ -65,38 +65,38 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
     }
 
     //define getter, setter
-    private String getId_PRN(){
+    public String getId_PRN(){
         return new String(this.id_prn);
     }
-    private void setId_PRN(String id_prn){
+    public void setId_PRN(String id_prn){
         this.id_prn = new String(id_prn);
     }
-    private String getId_staff(){
+    public String getId_staff(){
         return new String(this.id_staff);
     }
-    private void setId_staff(String id_staff){
+    public void setId_staff(String id_staff){
         this.id_staff = new String(id_staff);
     }
-    private String getId_supplier(){
+    public String getId_supplier(){
         return new String(this.id_supplier);
     }
-    private void setId_supplier(String id_supplier){
+    public void setId_supplier(String id_supplier){
         this.id_supplier = new String(this.id_supplier);
     }
     
-    private LocalDateTime getDateImport(){ // localDateTime type
+    public LocalDateTime getDateImport(){ // localDateTime type
         return this.date_import; // YYYY-MM-DD HH-MM-SS
     }
 
-    private void setDateImport(LocalDateTime ldt) {
+    public void setDateImport(LocalDateTime ldt) {
         this.date_import = ldt;
     }
     
-    private ArrayList getListDetailPRN(){
+    public ArrayList getListDetailPRN(){
         return new ArrayList(this.ListDetailPRN);
     }
     
-    private void setListDetailPRN(ArrayList ListDetailPRN){
+    public void setListDetailPRN(ArrayList ListDetailPRN){
         this.ListDetailPRN = new ArrayList<>(ListDetailPRN);
     }
     

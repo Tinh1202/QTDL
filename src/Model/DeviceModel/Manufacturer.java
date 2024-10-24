@@ -16,19 +16,19 @@ public class Manufacturer {
     
     // create default constructor
 
-    Manufacturer() {
+    public Manufacturer() {
     	this.id_manuf = new String("");
     	this.name_manuf = new String("");
-    	this.country = new Country("");
+    	this.country = new Country();
     }
     // Constructor có tham số
-    Manufacturer(String id_manuf, String name_manuf, Country country){
+    public Manufacturer(String id_manuf, String name_manuf, Country country){
     	this.id_manuf = new String(id_manuf);
         this.name_manuf = new String(name_manuf);
         this.country = country;
     }
     // Constructor sao chép
-    Manufacturer(Object manufacturer){
+    public Manufacturer(Object manufacturer){
     	if (manufacturer instanceof Manufacturer) { //Kiểm tra đối tượng device có phải kiểu Device
             Manufacturer manuf = new Manufacturer(manufacturer);
             this.id_manuf = new String(manuf.id_manuf);
@@ -38,34 +38,34 @@ public class Manufacturer {
             Manufacturer manuf = new Manufacturer();
             this.id_manuf = new String(manuf.id_manuf);
             this.name_manuf = new String(manuf.name_manuf);
-            this.country = new Country();
+            this.country = new Country(manuf.country);
         }
     }
     
     //GETTER VÀ SETTER
     
-    private String getIdManuf(){
+    public String getIdManuf(){
         return new String(this.id_manuf);
     }
     
-    private void setIdManuf(String id_manuf){
+    public void setIdManuf(String id_manuf){
         this.id_manuf = new String(id_manuf);
     }
     
-    private String getNameManuf() {
+    public String getNameManuf() {
         return new String(this.name_manuf);
     }
 
-    private void setNameManuf(String name_manuf) {
+    public void setNameManuf(String name_manuf) {
         this.name_manuf = new String(name_manuf);
     }
 
     // Getter và Setter cho country
-    private Country getCountry() {
+    public Country getCountry() {
         return new Country(this.country);  // Country --> copy constructor
     }
 
-    private void setCountry(Country country) {
+    public void setCountry(Country country) {
         this.country = new Country(country);  
     }
     //define setter, getter
