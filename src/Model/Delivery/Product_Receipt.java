@@ -9,6 +9,12 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.*;
+import Model.Connect.Connection;
+import java.util.ArrayList;
 /**
  *
  * @author vntin
@@ -111,5 +117,38 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
                 + "Id supplier: " + this.getId_supplier() + "\n"
                 + "Date: " + this.getDateImport().format(DateTimeFormatter.ISO_DATE);
     }
+    public Product_Receipt getPR_MySQL(String id){
+        java.sql.Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        Product_Receipt pr = new Product_Receipt();
+        try {
+            Model.Connect.Connection c = new Connection();
+            conn = c.getJDBC();
+            stmt = conn.createStatement();
 
+            String sql = "SELECT * FROM Product_Receipt WHERE id_prn=" + id +";"; // Thay "users" bằng bảng của bạn
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                String id_prn = new String(rs.getString("id_prn"));
+                LocalDateTime date_import = rs.getTimestamp("date_import").toLocalDateTime();
+                String id_staff = new String(rs.getString("id_staff"));
+                String id_supplier = new String(rs.getString("id_supplier"));
+                ArrayList<Detail_PRN> ListDetailPRN = new ArrayList<Detail_PRN>();
+                pr.setId_PRN(id_prn); pr.setDateImport(date_import); pr.setId_staff(id_staff); pr.setId_supplier(id_supplier); pr.setListDetailPRN(ListDetailPRN);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return new Product_Receipt(pr);
+    }
 }

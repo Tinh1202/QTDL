@@ -4,6 +4,12 @@
  */
 package Model.Delivery;
 import java.util.*;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.*;
+import Model.Connect.Connection;
+import java.util.ArrayList;
 /**
  *
  * @author vntin
@@ -83,5 +89,37 @@ public class Detail_DeliveryNote { // chi tiết phiếu xuất kho cho một th
                 + "Quantity: " + this.getQuantity() + "\n"
                 + "Price: " + this.getPrice() + "\n";
     }
-    
+    public Detail_DeliveryNote getDDN_MySQL(String id){
+        java.sql.Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        Detail_DeliveryNote ddn = new Detail_DeliveryNote();
+        try {
+            Model.Connect.Connection c = new Connection();
+            conn = c.getJDBC();
+            stmt = conn.createStatement();
+
+            String sql = "SELECT * FROM Detail_DeliveryNote WHERE id_dn=" + id +";"; // Thay "users" bằng bảng của bạn
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                String id_dn = new String(rs.getString("id_dn"));
+                String id_device = new String(rs.getString("id_device"));
+                int quantity = rs.getInt("quantity");
+                double price = rs.getDouble("price");
+                ddn.setId_dn(id_dn); ddn.setId_device(id_device); ddn.setQuantity(quantity); ddn.setPrice(price);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return new Detail_DeliveryNote(ddn);
+    }
 }
