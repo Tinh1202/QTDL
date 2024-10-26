@@ -53,41 +53,58 @@ public class ListProduct_Receipt {
         return this.length;
     }
     
+    // trả về danh sách các phiếu nhập <Array> : lấy phiếu nhập đưa vào mảng
     public ArrayList<Product_Receipt> ListPR_MySQL(){
-        java.sql.Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        ArrayList<Product_Receipt> listPR = new ArrayList<Product_Receipt>();
-        
-        try {
-            Model.Connect.Connection c = new Connection();
-            conn = c.getJDBC();
-            stmt = conn.createStatement();
+    java.sql.Connection conn = null;
+    Statement stmt = null;
+    ResultSet rs = null;
+    ArrayList<Product_Receipt> listPR = new ArrayList<>(); // mảng các phiếu nhập
+    
+    try {
+        Model.Connect.Connection c = new Connection();
+        conn = c.getJDBC();
+        stmt = conn.createStatement();
 
-            String sql = "SELECT * FROM Product_Receipt;"; // Thay "users" bằng bảng của bạn
-            rs = stmt.executeQuery(sql);
-            while (rs.next()) {
-                String id_prn = new String(rs.getString("id_prn"));
-                LocalDateTime date_import = rs.getTimestamp("date_import").toLocalDateTime();
-                String id_staff = new String(rs.getString("id_staff"));
-                String id_supplier = new String(rs.getString("id_supplier"));
-                ArrayList<Detail_PRN> ListDetailPRN = new ArrayList<Detail_PRN>(); 
-                Product_Receipt pr = new Product_Receipt(id_prn, id_supplier, id_staff, date_import, ListDetailPRN);
-                listPR.add(pr);
-            }
+        String sql = "SELECT * FROM product_receipt;"; // bảng phiếu nhập -> chọn tất cả các record
+        rs = stmt.executeQuery(sql);
+        while (rs.next()) {
+            String id_prn = rs.getString("id_prn");
+            LocalDateTime date_import = rs.getTimestamp("date_import").toLocalDateTime();
+            String id_staff = rs.getString("id_staff");
+            String id_supplier = rs.getString("id_supplier");
+            
+            // tạo đối tượng các chi tiết phiếu mỗi sản phẩm có id = id_prn
+            ArrayList<Detail_PRN> list_detailPRN = new ArrayList<>(
+                    new ListDetailPRN().ListDPRN_MySQL(id_prn)
+            );
+            
+            // tạo đối tượng của danh sách list_detailPRN
+            ListDetailPRN lst_detailprn = new ListDetailPRN(list_detailPRN);
+            
+            // tạo đối tượng phiếu nhập
+            Product_Receipt pr = new Product_Receipt();
+            pr.setId_PRN(id_prn); pr.setDateImport(date_import); pr.setId_staff(id_staff); pr.setId_supplier(id_supplier);
+            pr.setListDetailPRN(lst_detailprn);
+
+            listPR.add(pr);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+            if (conn != null) conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }  
-        return new ArrayList<Product_Receipt>(listPR); 
-    }
+        }
+    }  
+    return listPR;
+}
+
+    
+    
+    
     
     public void DisplayListPR(){ //showing list object Specification from Mysql
         ArrayList<Product_Receipt> lst_pr = ListPR_MySQL();
@@ -100,6 +117,11 @@ public class ListProduct_Receipt {
             System.out.println("Detail PRN: " + pr.getListDetailPRN() + "\n");
         } 
     }
+    
+    
+    // Trả về danh sách các phiếu nhập kiểu Đối tượng ListProduct-Receipt
+    
+    
     
     public ArrayList<Product_Receipt> DeleteHeadPRFromList(ArrayList<Product_Receipt> lst_pr){ // xóa ở đầu
         ArrayList<Product_Receipt> lst_pr_new = new ArrayList<Product_Receipt>(lst_pr);
@@ -168,19 +190,4 @@ public class ListProduct_Receipt {
         lst_pr_new.add(pr);
         return lst_pr_new;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 }

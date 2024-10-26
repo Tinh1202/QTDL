@@ -53,6 +53,7 @@ public class ListDetailPRN {
         return this.length;
     }
     
+    // lấy tất cả các chi tiết phiếu từng sản phẩm trong csdl
     public ArrayList<Detail_PRN> ListDPRN_MySQL(){
         java.sql.Connection conn = null;
         Statement stmt = null;
@@ -65,6 +66,44 @@ public class ListDetailPRN {
             stmt = conn.createStatement();
 
             String sql = "SELECT * FROM Detail_PRN;"; // Thay "users" bằng bảng của bạn
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                String id_prn = new String(rs.getString("id_prn"));
+                String id_device = new String(rs.getString("id_device"));
+                int number = rs.getInt("number");
+                double price = rs.getDouble("price");
+                Detail_PRN prn = new Detail_PRN(id_prn, id_device, number, price);
+                listPRN.add(prn);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return new ArrayList<Detail_PRN>(listPRN); 
+    }
+    
+    // Lấy các chi tiết phiếu nhập bằng ID chi tiết phiếu nhập
+    public ArrayList<Detail_PRN> ListDPRN_MySQL(String id){
+        java.sql.Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        ArrayList<Detail_PRN> listPRN = new ArrayList<Detail_PRN>();
+        
+        try {
+            Model.Connect.Connection c = new Connection();
+            conn = c.getJDBC();
+            stmt = conn.createStatement();
+
+            String sql = "SELECT * FROM Detail_PRN WHERE id_prn = " + new String(id) + ";" ; // Thay "users" bằng bảng của bạn
+            
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 String id_prn = new String(rs.getString("id_prn"));

@@ -167,18 +167,11 @@ public class ListDeliveryNote {
         return new ArrayList<Delivery_Note>(lst_dn_new);
     }
     
-    public ArrayList<Delivery_Note> AddSpecToList(ArrayList<Delivery_Note> lst_dn, Delivery_Note dn){ //thêm một object vào List
+    public ArrayList<Delivery_Note> AddDNToList(ArrayList<Delivery_Note> lst_dn, Delivery_Note dn){ //thêm một object vào List
         ArrayList<Delivery_Note> lst_dn_new = new ArrayList<Delivery_Note>(lst_dn);
         Delivery_Note dn_new = new Delivery_Note(dn);
         
         lst_dn_new.add(dn);
         return lst_dn_new;
     }
-    
-    
-    
-    
-    
-    
-    
 }
