@@ -40,6 +40,7 @@ public class ListManuf {
             this.listManufacturer = new ArrayList<Manufacturer>(listManuf.listManufacturer);
             this.length = listManuf.length;
         } else {
+            ListManuf listManuf = new ListManuf ();
             this.listManufacturer = new ArrayList<Manufacturer>(listManuf.listManufacturer);
             this.length = 0;
         }

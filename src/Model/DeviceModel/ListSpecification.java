@@ -90,6 +90,43 @@ public class ListSpecification {
         return new ArrayList<Specification>(listSpec); 
     }
     
+   
+    // lấy danh sách các thông số bằng ID,...
+    public ArrayList<Specification> ListSpec_MySQL(String id){
+        java.sql.Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        ArrayList<Specification> listSpec = new ArrayList<Specification>();
+        
+        try {
+            Model.Connect.Connection c = new Connection();
+            conn = c.getJDBC();
+            stmt = conn.createStatement();
+
+            String sql = "SELECT * FROM Specification where id_spec = " + id + ";"; // Thay "users" bằng bảng của bạn
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                String id_device = new String(rs.getString("id_device"));
+                String name_spec = new String(rs.getString("name_spec"));
+                String data_spec = new String(rs.getString("data_spec"));
+                Specification spec = new Specification(id_device, name_spec, data_spec);
+                listSpec.add(spec);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return new ArrayList<Specification>(listSpec); 
+    }
+    
     
     public void DisplayListSpec(){ //showing list object Specification from Mysql
         ArrayList<Specification> lst_spec = ListSpec_MySQL();
