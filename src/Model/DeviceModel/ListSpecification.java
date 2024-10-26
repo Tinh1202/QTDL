@@ -42,15 +42,15 @@ public class ListSpecification {
             this.length = listDT.length;
         }
     }
-    
-    public ArrayList<Specification> getListDeviceType(){
+        
+    public ArrayList<Specification> getListSpec(){
         return new ArrayList<Specification>(this.ListSpec);
     }
     
-    public void setListDeviceType(ArrayList<Specification> ListSpec){
+    public void setListSpec(ArrayList<Specification> ListSpec){
         this.ListSpec = new ArrayList<Specification>(ListSpec);
     }
-    
+
     public int getLengthListSpec(){
         return this.length;
     }
