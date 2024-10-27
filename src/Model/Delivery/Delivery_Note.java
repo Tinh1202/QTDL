@@ -93,37 +93,72 @@ public class Delivery_Note { // class phiếu xuất kho sản phẩm đến kh�
                 + "Id Customer: " + this.getId_Customer() + "\n"
                 + "Date get delivery note: " + this.datetime_shipment.format(DateTimeFormatter.ISO_DATE);
     }
-    public Delivery_Note getDN_MySQL(String id){
-        java.sql.Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        Delivery_Note dn = new Delivery_Note();
+//    public Delivery_Note getDN_MySQL(String id){
+//        java.sql.Connection conn = null;
+//        Statement stmt = null;
+//        ResultSet rs = null;
+//        Delivery_Note dn = new Delivery_Note();
+//        try {
+//            Model.Connect.Connection c = new Connection();
+//            conn = c.getJDBC();
+//            stmt = conn.createStatement();
+//
+//            String sql = "SELECT * FROM Delivery_Note WHERE id_dn=" + id +";"; // Thay "users" bằng bảng của bạn
+//            rs = stmt.executeQuery(sql);
+//            while (rs.next()) {
+//                String id_dn = new String(rs.getString("id_dn"));
+//                String id_staff = new String(rs.getString("id_staff"));
+//                String id_customer = new String(rs.getString("id_customer"));
+//                LocalDateTime datetime_shipment = rs.getTimestamp("datetime_shipment").toLocalDateTime();
+//                dn.setId_Dn(id_dn); dn.setId_Staff(id_staff); dn.setIdCustomer(id_customer); dn.setLocalDateTime(datetime_shipment);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                if (rs != null) rs.close();
+//                if (stmt != null) stmt.close();
+//                if (conn != null) conn.close();
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return new Delivery_Note(dn);
+//    }
+    public Delivery_Note getDN_MySQL(String id) {
+    java.sql.Connection conn = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    Delivery_Note dn = new Delivery_Note();
+    try {
+        Model.Connect.Connection c = new Connection();
+        conn = c.getJDBC();      
+        String sql = "SELECT * FROM Delivery_Note WHERE id_dn = ?";
+        pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, id);
+        rs = pstmt.executeQuery();
+        if (rs.next()) {
+            String id_dn = rs.getString("id_dn");
+            String id_staff = rs.getString("id_staff");
+            String id_customer = rs.getString("id_customer");
+            LocalDateTime datetime_shipment = rs.getTimestamp("datetime_shipment").toLocalDateTime();
+            dn.setId_Dn(id_dn);
+            dn.setId_Staff(id_staff);
+            dn.setIdCustomer(id_customer);
+            dn.setLocalDateTime(datetime_shipment);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
         try {
-            Model.Connect.Connection c = new Connection();
-            conn = c.getJDBC();
-            stmt = conn.createStatement();
-
-            String sql = "SELECT * FROM Delivery_Note WHERE id_dn=" + id +";"; // Thay "users" bằng bảng của bạn
-            rs = stmt.executeQuery(sql);
-            while (rs.next()) {
-                String id_dn = new String(rs.getString("id_dn"));
-                String id_staff = new String(rs.getString("id_staff"));
-                String id_customer = new String(rs.getString("id_customer"));
-                LocalDateTime datetime_shipment = rs.getTimestamp("datetime_shipment").toLocalDateTime();
-                dn.setId_Dn(id_dn); dn.setId_Staff(id_staff); dn.setIdCustomer(id_customer); dn.setLocalDateTime(datetime_shipment);
-            }
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+            if (conn != null) conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-        
-        return new Delivery_Note(dn);
     }
+    return new Delivery_Note(dn);
+}
+
 }

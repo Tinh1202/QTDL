@@ -183,9 +183,4 @@ public class ListDeliveryNote {
         return lst_dn_new;
     }
     
-    public static void main(String[] args){
-        ListDeliveryNote a = new ListDeliveryNote();
-        a.ListDN_MySQL();
-        a.DisplayListDN();
-    }
 }

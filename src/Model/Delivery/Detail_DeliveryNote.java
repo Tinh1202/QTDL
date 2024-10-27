@@ -91,37 +91,78 @@ public class Detail_DeliveryNote { // chi tiết phiếu xuất kho cho một th
     }
     
     
-    public Detail_DeliveryNote getDDN_MySQL(String id){
-        java.sql.Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        Detail_DeliveryNote ddn = new Detail_DeliveryNote();
-        try {
-            Model.Connect.Connection c = new Connection();
-            conn = c.getJDBC();
-            stmt = conn.createStatement();
+//    public Detail_DeliveryNote getDDN_MySQL(String id){
+//        java.sql.Connection conn = null;
+//        Statement stmt = null;
+//        ResultSet rs = null;
+//        Detail_DeliveryNote ddn = new Detail_DeliveryNote();
+//        try {
+//            Model.Connect.Connection c = new Connection();
+//            conn = c.getJDBC();
+//            stmt = conn.createStatement();
+//
+//            String sql = "SELECT * FROM Detail_DeliveryNote WHERE id_dn=" + id +";"; // Thay "users" bằng bảng của bạn
+//            rs = stmt.executeQuery(sql);
+//            while (rs.next()) {
+//                String id_dn = new String(rs.getString("id_dn"));
+//                String id_device = new String(rs.getString("id_device"));
+//                int quantity = rs.getInt("quantity");
+//                double price = rs.getDouble("price");
+//                ddn.setId_dn(id_dn); ddn.setId_device(id_device); ddn.setQuantity(quantity); ddn.setPrice(price);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                if (rs != null) rs.close();
+//                if (stmt != null) stmt.close();
+//                if (conn != null) conn.close();
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        
+//        return new Detail_DeliveryNote(ddn);
+//    }
+    public Detail_DeliveryNote getDDN_MySQL(String id) {
+    java.sql.Connection conn = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    Detail_DeliveryNote ddn = new Detail_DeliveryNote();
 
-            String sql = "SELECT * FROM Detail_DeliveryNote WHERE id_dn=" + id +";"; // Thay "users" bằng bảng của bạn
-            rs = stmt.executeQuery(sql);
-            while (rs.next()) {
-                String id_dn = new String(rs.getString("id_dn"));
-                String id_device = new String(rs.getString("id_device"));
-                int quantity = rs.getInt("quantity");
-                double price = rs.getDouble("price");
-                ddn.setId_dn(id_dn); ddn.setId_device(id_device); ddn.setQuantity(quantity); ddn.setPrice(price);
-            }
+    try {
+        Model.Connect.Connection c = new Connection();
+        conn = c.getJDBC();
+
+        String sql = "SELECT * FROM Detail_DeliveryNote WHERE id_dn = ?";
+        pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, id);
+
+        rs = pstmt.executeQuery();
+        if (rs.next()) {
+            String id_dn = rs.getString("id_dn");
+            String id_device = rs.getString("id_device");
+            int quantity = rs.getInt("quantity");
+            double price = rs.getDouble("price");
+
+            ddn.setId_dn(id_dn);
+            ddn.setId_device(id_device);
+            ddn.setQuantity(quantity);
+            ddn.setPrice(price);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+            if (conn != null) conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-        
-        return new Detail_DeliveryNote(ddn);
     }
+
+    return new Detail_DeliveryNote(ddn);
+}
+
 }

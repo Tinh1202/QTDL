@@ -233,19 +233,8 @@ public class ListDetailPRN {
         return lst_prn_new;
     }
     
+ 
     
-    public static void main(String[] args){
-        ListDetailPRN a = new ListDetailPRN();
-        a.ListDPRN_MySQL("PRN001");
-//        a.DisplayListDPRN();
-    }
-    
-    
-    
-    
-    
-    
-    
-    
+
     
 }
