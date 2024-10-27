@@ -89,6 +89,8 @@ public class Detail_DeliveryNote { // chi tiết phiếu xuất kho cho một th
                 + "Quantity: " + this.getQuantity() + "\n"
                 + "Price: " + this.getPrice() + "\n";
     }
+    
+    
     public Detail_DeliveryNote getDDN_MySQL(String id){
         java.sql.Connection conn = null;
         Statement stmt = null;
