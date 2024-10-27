@@ -190,4 +190,7 @@ public class ListProduct_Receipt {
         lst_pr_new.add(pr);
         return lst_pr_new;
     }
+    
+    
+    
 }

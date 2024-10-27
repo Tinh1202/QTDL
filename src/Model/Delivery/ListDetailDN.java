@@ -57,13 +57,11 @@ public class ListDetailDN {
         java.sql.Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
-        ArrayList<Detail_DeliveryNote> listDDN = new ArrayList<Detail_DeliveryNote>();
-        
+        ArrayList<Detail_DeliveryNote> listDDN = new ArrayList<Detail_DeliveryNote>();       
         try {
             Model.Connect.Connection c = new Connection();
             conn = c.getJDBC();
             stmt = conn.createStatement();
-
             String sql = "SELECT * FROM Detail_DeliveryNote;"; // Thay "users" bằng bảng của bạn
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
@@ -84,9 +82,30 @@ public class ListDetailDN {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
-        
+        }      
         return new ArrayList<Detail_DeliveryNote>(listDDN); 
+    }
+    
+    public ArrayList<Detail_DeliveryNote> ListDDN_MySQL(String id) {
+        ArrayList<Detail_DeliveryNote> listDDN = new ArrayList<Detail_DeliveryNote>();  
+        String sql = "SELECT * FROM Detail_DeliveryNote WHERE id_dn = ?"; // Sử dụng câu truy vấn với tham số
+        try (java.sql.Connection conn = new Model.Connect.Connection().getJDBC();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {  
+            stmt.setString(1, id); // Truyền tham số vào câu truy vấn
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String id_dn = new String(rs.getString("id_dn"));
+                    String id_device = new String(rs.getString("id_device"));
+                    int quantity = rs.getInt("quantity");
+                    double price = rs.getDouble("price");
+                    Detail_DeliveryNote ddn = new Detail_DeliveryNote(id_dn, id_device, quantity, price);
+                    listDDN.add(ddn);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<Detail_DeliveryNote>(listDDN);
     }
     
     public void DisplayListDDN(){ //showing list object Specification from Mysql
@@ -94,7 +113,7 @@ public class ListDetailDN {
 
         for (Detail_DeliveryNote ddn : lst_ddn) {
             System.out.println("Id delivery note: " + ddn.getId_dn() + "\n");
-            System.out.println(":Id device " + ddn.getId_device() + "\n");
+            System.out.println("Id device: " + ddn.getId_device() + "\n");
             System.out.println("Quantity: " + ddn.getQuantity() + "\n");
             System.out.println("Price: " + ddn.getPrice() + "\n");
         } 
@@ -172,8 +191,7 @@ public class ListDetailDN {
         return lst_ddn_new;
     }
     
-    
-    
+   
     
     
     

@@ -103,6 +103,7 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
     
     public void setListDetailPRN(ListDetailPRN ListDetailPRN){
         this.ListDetailPRN = new ListDetailPRN(ListDetailPRN);
+        
     }
     
     private double Total_Price(){  // return total price of devices from detail_prn list
