@@ -191,6 +191,10 @@ public class ListProduct_Receipt {
         return lst_pr_new;
     }
     
-    
+    public static void main(String[] args){
+        ListProduct_Receipt a = new ListProduct_Receipt();
+        a.ListPR_MySQL();
+        a.DisplayListPR();
+    }
     
 }

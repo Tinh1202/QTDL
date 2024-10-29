@@ -141,7 +141,7 @@ public class Delivery_Note { // class phiếu xuất kho sản phẩm đến kh�
             String id_dn = rs.getString("id_dn");
             String id_staff = rs.getString("id_staff");
             String id_customer = rs.getString("id_customer");
-            LocalDateTime datetime_shipment = rs.getTimestamp("datetime_shipment").toLocalDateTime();
+            LocalDateTime datetime_shipment = rs.getTimestamp("date_shipment").toLocalDateTime();
             dn.setId_Dn(id_dn);
             dn.setId_Staff(id_staff);
             dn.setIdCustomer(id_customer);

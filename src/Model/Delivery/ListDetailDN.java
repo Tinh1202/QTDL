@@ -192,7 +192,11 @@ public class ListDetailDN {
     }
     
    
-    
+    public static void main(String[] args){
+        ListDetailDN a = new ListDetailDN();
+        a.ListDDN_MySQL();
+        a.DisplayListDDN();
+    }
     
     
     

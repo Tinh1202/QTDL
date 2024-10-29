@@ -73,7 +73,7 @@ public class ListDeliveryNote {
                 String id_dn = new String(rs.getString("id_dn"));
                 String id_staff = new String(rs.getString("id_staff"));
                 String id_customer = new String(rs.getString("id_customer"));
-                LocalDateTime datetime_shipment = rs.getTimestamp("datetime_shipment").toLocalDateTime();
+                LocalDateTime datetime_shipment = rs.getTimestamp("date_shipment").toLocalDateTime();
                 
                 ArrayList<Detail_DeliveryNote> list_detaildn = new ArrayList<>(
                     new ListDetailDN().ListDDN_MySQL(id_dn)
@@ -182,5 +182,9 @@ public class ListDeliveryNote {
         lst_dn_new.add(dn);
         return lst_dn_new;
     }
-    
+    public static void main(String[] args){
+        ListDeliveryNote a = new ListDeliveryNote();
+        a.ListDN_MySQL();
+        a.DisplayListDN();
+    }
 }
