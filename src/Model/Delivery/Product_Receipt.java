@@ -25,7 +25,7 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
     private String id_staff; // id nhân viên
     private String id_supplier; // mã nhà cung cấp
     
-    private ListDetailPRN ListDetailPRN; // danh sách các chi tiết phiếu
+    private ArrayList<Detail_PRN> listDetailPRN; // danh sách các chi tiết phiếu
     
     
     public Product_Receipt() {
@@ -35,20 +35,20 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
         LocalDate ld = LocalDate.of(1990, 01, 01);
         LocalTime lt = LocalTime.of(01, 01, 01);
         this.date_import = LocalDateTime.of(ld, lt);
-        this.ListDetailPRN = new ListDetailPRN();
+        this.listDetailPRN = new ArrayList<Detail_PRN>();
     }
 
     public Product_Receipt(String id_prn,
             String id_supplier,
             String id_staff,
             LocalDateTime date_import,
-            ListDetailPRN ListDetailPRN) {
+            ArrayList<Detail_PRN> listDetailPRN) {
         
         this.id_prn = new String(id_prn); 
         this.id_staff = new String(id_staff);
         this.date_import = date_import;
         this.id_supplier = new String(id_supplier);
-        this.ListDetailPRN = new ListDetailPRN(ListDetailPRN);
+        this.listDetailPRN = new ArrayList<Detail_PRN>(listDetailPRN);
     }
     
     public Product_Receipt(Object product_Rece){
@@ -58,14 +58,14 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
             this.id_staff = new String(pr.id_staff);
             this.id_supplier = new String(pr.id_supplier);
             this.date_import = pr.date_import;
-            this.ListDetailPRN = new ListDetailPRN(pr.ListDetailPRN);
+            this.listDetailPRN = new ArrayList<Detail_PRN>(pr.listDetailPRN);
         } else{
             Product_Receipt pr = new Product_Receipt();
             this.id_prn = new String(pr.id_prn);
             this.id_staff = new String(pr.id_staff);
             this.id_supplier = new String(pr.id_supplier);
             this.date_import = pr.date_import;
-            this.ListDetailPRN = new ListDetailPRN(pr.ListDetailPRN);
+            this.listDetailPRN = new ArrayList<Detail_PRN>(pr.listDetailPRN);
         }
     }
 
@@ -97,14 +97,32 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
         this.date_import = ldt;
     }
     
-    public ListDetailPRN getListDetailPRN(){
-        return new ListDetailPRN(this.ListDetailPRN);
+    public ArrayList<Detail_PRN> getListDetailPRN(){
+        return new ArrayList<Detail_PRN>(this.listDetailPRN);
     }
     
-    public void setListDetailPRN(ListDetailPRN ListDetailPRN){
-        this.ListDetailPRN = new ListDetailPRN(ListDetailPRN);
+    public void setListDetailPRN(ArrayList<Detail_PRN> lst){
+//        ListDetailPRN l = new ListDetailPRN(lst);
         
+        this.listDetailPRN = lst;
     }
+    
+//    public void setListDetailPRN(ListDetailPRN listDetailPRN) {
+//    try {
+//        // Kiểm tra nếu listDetailPRN là null, gán một ListDetailPRN rỗng để tránh NullPointerException
+//        if (listDetailPRN == null) {
+//            this.listDetailPRN = new ListDetailPRN(new ArrayList<>()); // Khởi tạo với danh sách rỗng
+//        } else {
+//            this.listDetailPRN = new ListDetailPRN(listDetailPRN); // Khởi tạo với giá trị được truyền vào
+//        }
+//        
+//        // In độ dài danh sách sau khi khởi tạo
+//        System.out.print(this.listDetailPRN.getLengthListDPRN());
+//    } catch (Exception e) {
+//        System.out.print("Lỗi: " + e.getMessage());
+//    }
+//}
+
     
     private double Total_Price(){  // return total price of devices from detail_prn list
         return 0.00;
@@ -193,8 +211,8 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
             
             // Lấy các chi tiết phiếu nhập (Detail PRN) có id = id_prn trong cơ sở dữ liệu
             ArrayList<Detail_PRN> listDPRN = new ArrayList<>(listDetailPRN.ListDPRN_MySQL(id_prn));
-            ListDetailPRN listDetailPRN_new = new ListDetailPRN(listDPRN);
-            pr.setListDetailPRN(listDetailPRN_new);
+//            ListDetailPRN listDetailPRN_new = new ListDetailPRN(listDPRN);
+            pr.setListDetailPRN(listDPRN);
         }
         
     } catch (SQLException e) {
@@ -212,4 +230,6 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
     return new Product_Receipt(pr);
 }
 
+      
+        
 }

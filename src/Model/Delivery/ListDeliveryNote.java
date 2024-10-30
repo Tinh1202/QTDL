@@ -182,9 +182,4 @@ public class ListDeliveryNote {
         lst_dn_new.add(dn);
         return lst_dn_new;
     }
-    public static void main(String[] args){
-        ListDeliveryNote a = new ListDeliveryNote();
-        a.ListDN_MySQL();
-        a.DisplayListDN();
-    }
 }

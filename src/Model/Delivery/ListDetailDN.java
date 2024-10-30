@@ -191,13 +191,6 @@ public class ListDetailDN {
         return lst_ddn_new;
     }
     
-   
-    public static void main(String[] args){
-        ListDetailDN a = new ListDetailDN();
-        a.ListDDN_MySQL();
-        a.DisplayListDDN();
-    }
-    
     
     
 }

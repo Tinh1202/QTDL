@@ -16,7 +16,7 @@ import java.util.Iterator;
  * @author vntin
  */
 public class ListDetailPRN {
-    private ArrayList<Detail_PRN>  ListPRN;
+    private ArrayList<Detail_PRN> ListPRN;
     private int length;
 
     public ListDetailPRN() {
@@ -231,12 +231,6 @@ public class ListDetailPRN {
         
         lst_prn_new.add(prn);
         return lst_prn_new;
-    }
-    
- public static void main(String[] args){
-        ListDetailPRN a = new ListDetailPRN();
-        a.ListDPRN_MySQL();
-        a.DisplayListDPRN();
     }
     
 
