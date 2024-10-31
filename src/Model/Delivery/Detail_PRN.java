@@ -83,37 +83,78 @@ public class Detail_PRN { // class chi tiết phiếu nhập
     private double totalPrice(){ // tính giá của thiết bị * số lượng
         return (double) this.getPrice() * this.getNumber();
     }
-    public Detail_PRN getDPRN_MySQL(String id){
-        java.sql.Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        Detail_PRN prn = new Detail_PRN();
-        try {
-            Model.Connect.Connection c = new Connection();
-            conn = c.getJDBC();
-            stmt = conn.createStatement();
+//    public Detail_PRN getDPRN_MySQL(String id){
+//        java.sql.Connection conn = null;
+//        Statement stmt = null;
+//        ResultSet rs = null;
+//        Detail_PRN prn = new Detail_PRN();
+//        try {
+//            Model.Connect.Connection c = new Connection();
+//            conn = c.getJDBC();
+//            stmt = conn.createStatement();
+//
+//            String sql = "SELECT * FROM Detail_PRN WHERE id_prn=" + id +";"; // Thay "users" bằng bảng của bạn
+//            rs = stmt.executeQuery(sql);
+//            while (rs.next()) {
+//                String id_prn = new String(rs.getString("id_prn"));
+//                String id_device = new String(rs.getString("id_device"));
+//                int number = rs.getInt("number");
+//                double price = rs.getDouble("price");
+//                prn.setId_prn(id_prn); prn.setId_device(id_device); prn.setNumber(number); prn.setPrice(price);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                if (rs != null) rs.close();
+//                if (stmt != null) stmt.close();
+//                if (conn != null) conn.close();
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        
+//        return new Detail_PRN(prn);
+//    }
+    public Detail_PRN getDPRN_MySQL(String id) {
+    java.sql.Connection conn = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    Detail_PRN prn = new Detail_PRN();
 
-            String sql = "SELECT * FROM Detail_PRN WHERE id_prn=" + id +";"; // Thay "users" bằng bảng của bạn
-            rs = stmt.executeQuery(sql);
-            while (rs.next()) {
-                String id_prn = new String(rs.getString("id_prn"));
-                String id_device = new String(rs.getString("id_device"));
-                int number = rs.getInt("number");
-                double price = rs.getDouble("price");
-                prn.setId_prn(id_prn); prn.setId_device(id_device); prn.setNumber(number); prn.setPrice(price);
-            }
+    try {
+        Model.Connect.Connection c = new Connection();
+        conn = c.getJDBC();
+
+        String sql = "SELECT * FROM Detail_PRN WHERE id_prn = ?";
+        pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, id);
+
+        rs = pstmt.executeQuery();
+        if (rs.next()) {
+            String id_prn = rs.getString("id_prn");
+            String id_device = rs.getString("id_device");
+            int number = rs.getInt("number");
+            double price = rs.getDouble("price");
+
+            prn.setId_prn(id_prn);
+            prn.setId_device(id_device);
+            prn.setNumber(number);
+            prn.setPrice(price);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+            if (conn != null) conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-        
-        return new Detail_PRN(prn);
     }
+
+    return new Detail_PRN(prn);
+}
+
 }
