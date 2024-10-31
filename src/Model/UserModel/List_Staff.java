@@ -13,24 +13,24 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.time.LocalDate;
 
-public class ListStaff {
+public class List_Staff {
     private ArrayList<Staff> ListStaff;
     private int length;
 
     // Default constructor
-    public ListStaff() {
+    public List_Staff() {
         this.ListStaff = new ArrayList<>();
         this.length = 0;
     }
 
     // Constructor with an existing list of staff
-    public ListStaff(ArrayList<Staff> listStaff) {
+    public List_Staff(ArrayList<Staff> listStaff) {
         this.ListStaff = new ArrayList<>(listStaff);
         this.length = listStaff.size();
     }
 
     // Copy constructor
-    public ListStaff(Object listObj) {
+    public List_Staff(Object listObj) {
         if (listObj instanceof ListStaff) {
             ListStaff listStaffObj = (ListStaff) listObj;
             this.ListStaff = new ArrayList<>(listStaffObj.ListStaff);

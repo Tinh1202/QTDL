@@ -14,8 +14,8 @@ import java.util.Iterator;
 import java.time.LocalDate;
 
 public class ListStaff {
-    private ArrayList<Staff> ListStaff;
-    private int length;
+    ArrayList<Staff> ListStaff;
+    int length;
 
     // Default constructor
     public ListStaff() {
