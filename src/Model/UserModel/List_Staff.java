@@ -18,21 +18,18 @@ public class List_Staff {
     private int length;
 
     // Default constructor
-
     public List_Staff() {
         this.ListStaff = new ArrayList<>();
         this.length = 0;
     }
 
     // Constructor with an existing list of staff
-
     public List_Staff(ArrayList<Staff> listStaff) {
         this.ListStaff = new ArrayList<>(listStaff);
         this.length = listStaff.size();
     }
 
     // Copy constructor
-
     public List_Staff(Object listObj) {
         if (listObj instanceof ListStaff) {
             ListStaff listStaffObj = (ListStaff) listObj;
@@ -154,7 +151,6 @@ public class List_Staff {
     public ArrayList<Staff> AddStaff(Staff staff) {
         ArrayList<Staff> newList = new ArrayList<>(this.ListStaff);
         newList.add(new Staff(staff));
-
         return newList;
     }
 }
