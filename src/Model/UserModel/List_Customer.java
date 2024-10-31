@@ -15,26 +15,26 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class ListCustomer {
+public class List_Customer {
     private ArrayList<Customer> ListCustomer;
     private int length;
 
     // Default constructor
-    public ListCustomer() {
+    public List_Customer() {
         this.ListCustomer = new ArrayList<>();
         this.length = 0;
     }
 
     // Constructor with an existing list of customers
-    public ListCustomer(ArrayList<Customer> listCustomer) {
+    public List_Customer(ArrayList<Customer> listCustomer) {
         this.ListCustomer = new ArrayList<>(listCustomer);
         this.length = listCustomer.size();
     }
 
     // Copy constructor
-    public ListCustomer(Object listObj) {
-        if (listObj instanceof ListCustomer) {
-            ListCustomer listCustomerObj = (ListCustomer) listObj;
+    public List_Customer(Object listObj) {
+        if (listObj instanceof List_Customer) {
+            List_Customer listCustomerObj = (List_Customer) listObj;
             this.ListCustomer = new ArrayList<>(listCustomerObj.ListCustomer);
             this.length = listCustomerObj.length;
         } else {
