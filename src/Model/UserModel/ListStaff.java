@@ -8,33 +8,29 @@ package Model.UserModel;
  *
  * @author vntin
  */
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.time.LocalDate;
 
-public class List_Staff {
-    private ArrayList<Staff> ListStaff;
-    private int length;
+public class ListStaff {
+    ArrayList<Staff> ListStaff;
+    int length;
 
     // Default constructor
-
-    public List_Staff() {
+    public ListStaff() {
         this.ListStaff = new ArrayList<>();
         this.length = 0;
     }
 
     // Constructor with an existing list of staff
-
-    public List_Staff(ArrayList<Staff> listStaff) {
+    public ListStaff(ArrayList<Staff> listStaff) {
         this.ListStaff = new ArrayList<>(listStaff);
         this.length = listStaff.size();
     }
 
     // Copy constructor
-
-    public List_Staff(Object listObj) {
+    public ListStaff(Object listObj) {
         if (listObj instanceof ListStaff) {
             ListStaff listStaffObj = (ListStaff) listObj;
             this.ListStaff = new ArrayList<>(listStaffObj.ListStaff);
@@ -155,9 +151,7 @@ public class List_Staff {
     public ArrayList<Staff> AddStaff(Staff staff) {
         ArrayList<Staff> newList = new ArrayList<>(this.ListStaff);
         newList.add(new Staff(staff));
-
         return newList;
     }
 }
-
 

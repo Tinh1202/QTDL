@@ -86,6 +86,7 @@ public class ListProduct_Receipt {
             pr.setId_PRN(id_prn); pr.setDateImport(date_import); pr.setId_staff(id_staff); pr.setId_supplier(id_supplier);
             pr.setListDetailPRN(list_detailPRN);
 
+
             listPR.add(pr);
         }
     } catch (SQLException e) {
@@ -199,5 +200,6 @@ public class ListProduct_Receipt {
 //        System.out.print(p.getLengthListProductReceipt());
     }
     
+
 }
 //

@@ -26,6 +26,7 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
     private String id_supplier; // mã nhà cung cấp
     
     private ArrayList<Detail_PRN> listDetailPRN; // danh sách các chi tiết phiếu
+
     
     
     public Product_Receipt() {
@@ -36,6 +37,7 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
         LocalTime lt = LocalTime.of(01, 01, 01);
         this.date_import = LocalDateTime.of(ld, lt);
         this.listDetailPRN = new ArrayList<Detail_PRN>();
+
     }
 
     public Product_Receipt(String id_prn,
@@ -43,12 +45,14 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
             String id_staff,
             LocalDateTime date_import,
             ArrayList<Detail_PRN> listDetailPRN) {
+
         
         this.id_prn = new String(id_prn); 
         this.id_staff = new String(id_staff);
         this.date_import = date_import;
         this.id_supplier = new String(id_supplier);
         this.listDetailPRN = new ArrayList<Detail_PRN>(listDetailPRN);
+
     }
     
     public Product_Receipt(Object product_Rece){
@@ -59,6 +63,7 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
             this.id_supplier = new String(pr.id_supplier);
             this.date_import = pr.date_import;
             this.listDetailPRN = new ArrayList<Detail_PRN>(pr.listDetailPRN);
+
         } else{
             Product_Receipt pr = new Product_Receipt();
             this.id_prn = new String(pr.id_prn);
@@ -66,6 +71,7 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
             this.id_supplier = new String(pr.id_supplier);
             this.date_import = pr.date_import;
             this.listDetailPRN = new ArrayList<Detail_PRN>(pr.listDetailPRN);
+
         }
     }
 
@@ -105,6 +111,7 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
 //        ListDetailPRN l = new ListDetailPRN(lst);
         
         this.listDetailPRN = lst;
+
     }
     
 //    public void setListDetailPRN(ListDetailPRN listDetailPRN) {
@@ -222,6 +229,7 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
             if (rs != null) rs.close();
             if (pstmt != null) pstmt.close();
             if (conn != null) conn.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -230,6 +238,4 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
     return new Product_Receipt(pr);
 }
 
-      
-        
 }
