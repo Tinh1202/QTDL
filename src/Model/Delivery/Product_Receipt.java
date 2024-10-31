@@ -25,7 +25,8 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
     private String id_staff; // id nhân viên
     private String id_supplier; // mã nhà cung cấp
     
-    private ListDetailPRN ListDetailPRN; // danh sách các chi tiết phiếu
+    private ArrayList<Detail_PRN> listDetailPRN; // danh sách các chi tiết phiếu
+
     
     
     public Product_Receipt() {
@@ -35,20 +36,23 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
         LocalDate ld = LocalDate.of(1990, 01, 01);
         LocalTime lt = LocalTime.of(01, 01, 01);
         this.date_import = LocalDateTime.of(ld, lt);
-        this.ListDetailPRN = new ListDetailPRN();
+        this.listDetailPRN = new ArrayList<Detail_PRN>();
+
     }
 
     public Product_Receipt(String id_prn,
             String id_supplier,
             String id_staff,
             LocalDateTime date_import,
-            ListDetailPRN ListDetailPRN) {
+            ArrayList<Detail_PRN> listDetailPRN) {
+
         
         this.id_prn = new String(id_prn); 
         this.id_staff = new String(id_staff);
         this.date_import = date_import;
         this.id_supplier = new String(id_supplier);
-        this.ListDetailPRN = new ListDetailPRN(ListDetailPRN);
+        this.listDetailPRN = new ArrayList<Detail_PRN>(listDetailPRN);
+
     }
     
     public Product_Receipt(Object product_Rece){
@@ -58,14 +62,16 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
             this.id_staff = new String(pr.id_staff);
             this.id_supplier = new String(pr.id_supplier);
             this.date_import = pr.date_import;
-            this.ListDetailPRN = new ListDetailPRN(pr.ListDetailPRN);
+            this.listDetailPRN = new ArrayList<Detail_PRN>(pr.listDetailPRN);
+
         } else{
             Product_Receipt pr = new Product_Receipt();
             this.id_prn = new String(pr.id_prn);
             this.id_staff = new String(pr.id_staff);
             this.id_supplier = new String(pr.id_supplier);
             this.date_import = pr.date_import;
-            this.ListDetailPRN = new ListDetailPRN(pr.ListDetailPRN);
+            this.listDetailPRN = new ArrayList<Detail_PRN>(pr.listDetailPRN);
+
         }
     }
 
@@ -97,13 +103,33 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
         this.date_import = ldt;
     }
     
-    public ListDetailPRN getListDetailPRN(){
-        return new ListDetailPRN(this.ListDetailPRN);
+    public ArrayList<Detail_PRN> getListDetailPRN(){
+        return new ArrayList<Detail_PRN>(this.listDetailPRN);
     }
     
-    public void setListDetailPRN(ListDetailPRN ListDetailPRN){
-        this.ListDetailPRN = new ListDetailPRN(ListDetailPRN);
+    public void setListDetailPRN(ArrayList<Detail_PRN> lst){
+//        ListDetailPRN l = new ListDetailPRN(lst);
+        
+        this.listDetailPRN = lst;
+
     }
+    
+//    public void setListDetailPRN(ListDetailPRN listDetailPRN) {
+//    try {
+//        // Kiểm tra nếu listDetailPRN là null, gán một ListDetailPRN rỗng để tránh NullPointerException
+//        if (listDetailPRN == null) {
+//            this.listDetailPRN = new ListDetailPRN(new ArrayList<>()); // Khởi tạo với danh sách rỗng
+//        } else {
+//            this.listDetailPRN = new ListDetailPRN(listDetailPRN); // Khởi tạo với giá trị được truyền vào
+//        }
+//        
+//        // In độ dài danh sách sau khi khởi tạo
+//        System.out.print(this.listDetailPRN.getLengthListDPRN());
+//    } catch (Exception e) {
+//        System.out.print("Lỗi: " + e.getMessage());
+//    }
+//}
+
     
     private double Total_Price(){  // return total price of devices from detail_prn list
         return 0.00;
@@ -119,49 +145,97 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
     
     
     // Lấy phiếu nhập từ cơ sở dữ liệu dùng ID
-    public Product_Receipt getPR_MySQL(String id){
-        java.sql.Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        Product_Receipt pr = new Product_Receipt();
-        ListDetailPRN listDetailPRN = new ListDetailPRN();
-        
-        try {
-            Model.Connect.Connection c = new Connection();
-            conn = c.getJDBC();
-            stmt = conn.createStatement();
+//    public Product_Receipt getPR_MySQL(String id){
+//        java.sql.Connection conn = null;
+//        Statement stmt = null;
+//        ResultSet rs = null;
+//        Product_Receipt pr = new Product_Receipt();
+//        ListDetailPRN listDetailPRN = new ListDetailPRN();
+//        
+//        try {
+//            Model.Connect.Connection c = new Connection();
+//            conn = c.getJDBC();
+//            stmt = conn.createStatement();
+//
+//            String sql = "SELECT * FROM Product_Receipt WHERE id_prn=" + id +";"; // Thay "users" bằng bảng của bạn
+//            rs = stmt.executeQuery(sql);
+//            while (rs.next()) {
+//                String id_prn = new String(rs.getString("id_prn"));
+//                LocalDateTime date_import = rs.getTimestamp("date_import").toLocalDateTime();
+//                String id_staff = new String(rs.getString("id_staff"));
+//                String id_supplier = new String(rs.getString("id_supplier"));
+//                pr.setId_PRN(id_prn); pr.setDateImport(date_import); pr.setId_staff(id_staff); pr.setId_supplier(id_supplier);
+//                
+//                // lấy các chi tiết phiếu nhập (Detail PRN) có id = id_prn trong csdl
+//                
+//                ArrayList<Detail_PRN> listDPRN = new ArrayList<Detail_PRN>(listDetailPRN.ListDPRN_MySQL(id));
+//                ListDetailPRN listDetailPRN_new = new ListDetailPRN(listDPRN);
+//                pr.setListDetailPRN(listDetailPRN_new);
+//                
+//                // -> sau đó setter cho PR
+//            }
+//            
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                if (rs != null) rs.close();
+//                if (stmt != null) stmt.close();
+//                if (conn != null) conn.close();
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        
+//        return new Product_Receipt(pr);
+//    }
+    public Product_Receipt getPR_MySQL(String id) {
+    java.sql.Connection conn = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    Product_Receipt pr = new Product_Receipt();
+    ListDetailPRN listDetailPRN = new ListDetailPRN();
 
-            String sql = "SELECT * FROM Product_Receipt WHERE id_prn=" + id +";"; // Thay "users" bằng bảng của bạn
-            rs = stmt.executeQuery(sql);
-            while (rs.next()) {
-                String id_prn = new String(rs.getString("id_prn"));
-                LocalDateTime date_import = rs.getTimestamp("date_import").toLocalDateTime();
-                String id_staff = new String(rs.getString("id_staff"));
-                String id_supplier = new String(rs.getString("id_supplier"));
-                pr.setId_PRN(id_prn); pr.setDateImport(date_import); pr.setId_staff(id_staff); pr.setId_supplier(id_supplier);
-                
-                // lấy các chi tiết phiếu nhập (Detail PRN) có id = id_prn trong csdl
-                
-                ArrayList<Detail_PRN> listDPRN = new ArrayList<Detail_PRN>(listDetailPRN.ListDPRN_MySQL(id));
-                ListDetailPRN listDetailPRN_new = new ListDetailPRN(listDPRN);
-                pr.setListDetailPRN(listDetailPRN_new);
-                
-                // -> sau đó setter cho PR
-            }
+    try {
+        Model.Connect.Connection c = new Connection();
+        conn = c.getJDBC();
+
+        String sql = "SELECT * FROM Product_Receipt WHERE id_prn = ?";
+        pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, id);
+
+        rs = pstmt.executeQuery();
+        if (rs.next()) {
+            String id_prn = rs.getString("id_prn");
+            LocalDateTime date_import = rs.getTimestamp("date_import").toLocalDateTime();
+            String id_staff = rs.getString("id_staff");
+            String id_supplier = rs.getString("id_supplier");
+
+            pr.setId_PRN(id_prn);
+            pr.setDateImport(date_import);
+            pr.setId_staff(id_staff);
+            pr.setId_supplier(id_supplier);
             
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            // Lấy các chi tiết phiếu nhập (Detail PRN) có id = id_prn trong cơ sở dữ liệu
+            ArrayList<Detail_PRN> listDPRN = new ArrayList<>(listDetailPRN.ListDPRN_MySQL(id_prn));
+//            ListDetailPRN listDetailPRN_new = new ListDetailPRN(listDPRN);
+            pr.setListDetailPRN(listDPRN);
         }
         
-        return new Product_Receipt(pr);
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+            if (conn != null) conn.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
-    
+
+    return new Product_Receipt(pr);
+}
+
 }

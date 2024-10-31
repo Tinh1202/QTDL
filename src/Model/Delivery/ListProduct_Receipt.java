@@ -79,12 +79,13 @@ public class ListProduct_Receipt {
             );
             
             // tạo đối tượng của danh sách list_detailPRN
-            ListDetailPRN lst_detailprn = new ListDetailPRN(list_detailPRN);
-            
+//            ListDetailPRN lst_detailprn = new ListDetailPRN(list_detailPRN);
+//            ArrayList<Detail_PRN> lst_new = new ArrayList<>
             // tạo đối tượng phiếu nhập
             Product_Receipt pr = new Product_Receipt();
             pr.setId_PRN(id_prn); pr.setDateImport(date_import); pr.setId_staff(id_staff); pr.setId_supplier(id_supplier);
-            pr.setListDetailPRN(lst_detailprn);
+            pr.setListDetailPRN(list_detailPRN);
+
 
             listPR.add(pr);
         }
@@ -190,4 +191,15 @@ public class ListProduct_Receipt {
         lst_pr_new.add(pr);
         return lst_pr_new;
     }
+    
+    public static void main(String[] args){
+        ListProduct_Receipt a = new ListProduct_Receipt();
+        ArrayList<Product_Receipt> lst = a.ListPR_MySQL();
+//        a.DisplayListPR();
+//        ListProduct_Receipt p = new ListProduct_Receipt();
+//        System.out.print(p.getLengthListProductReceipt());
+    }
+    
+
 }
+//

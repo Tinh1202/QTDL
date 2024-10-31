@@ -8,6 +8,7 @@ package Model.UserModel;
  *
  * @author vntin
  */
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -158,4 +159,5 @@ public class List_Staff {
         return newList;
     }
 }
+
 
