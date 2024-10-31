@@ -8,6 +8,7 @@ package Model.UserModel;
  *
  * @author vntin
  */
+
 import java.sql.*;
 
 import java.time.LocalDate;
@@ -155,4 +156,5 @@ public class ListCustomer {
         return newList;
     }
 }
+
 

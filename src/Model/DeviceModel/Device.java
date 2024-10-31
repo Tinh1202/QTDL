@@ -14,7 +14,7 @@ import java.util.*;
 public class Device {
     private String id_device; //id 
     private String name_device; // tên thiết bị
-    private Specification spec;  // thông số kỹ thuật // List
+    private ListSpecification lst_spec;
     private Device_Type dv;  // loại thiết bị
     private double price; // giá thành
 //    private ArrayList<Specifications> ListSpec;  // thêm vào array các thông số kỹ thuật
@@ -23,19 +23,19 @@ public class Device {
     public Device () {
         this.id_device = new String("");
         this.name_device = new String("");
-        this.spec = new Specification();
+        this.lst_spec = new ListSpecification();
         this.dv = new Device_Type();
         this.price = 0.0;
     }
     //CONTRUCTOR CÓ THAM SỐ --> Khỏi tạo các đối tượng để truyền vào
     public Device (String id_device
             , String name_device
-            , Specification spec
+            , ListSpecification lst_spec
             , Device_Type dv
             , double price){
     	this.id_device = new String(id_device);
         this.name_device = new String(name_device);
-        this.spec = spec;  // đổi thành arrayList
+        this.lst_spec = lst_spec;  // đổi thành arrayList
         this.dv = dv;
         this.price = price;
     }
@@ -45,14 +45,14 @@ public class Device {
             Device dev = new Device(device);
             this.id_device = new String(dev.getIdDevice()); // Lấy giá trị id_device từ đối tượng dev gán cho hiện tại
             this.name_device = new String(dev.getNameDevice());
-            this.spec = dev.getSpec();  // tương tự
+            this.lst_spec = new ListSpecification(dev.getListSpec());  // tương tự
             this.dv = dev.getDeviceType();
             this.price = dev.getPrice();
         } else {
             Device dev = new Device();
             this.id_device = new String(dev.getIdDevice()); // Lấy giá trị id_device từ đối tượng dev gán cho hiện tại
             this.name_device = new String(dev.getNameDevice());
-            this.spec = dev.getSpec();  
+            this.lst_spec = new ListSpecification(dev.getListSpec());
             this.dv = dev.getDeviceType();
             this.price = dev.getPrice();
         }
@@ -74,12 +74,12 @@ public class Device {
         this.name_device = new String(name_device);
     }
     
-    public Specification getSpec(){
-        return new Specification(this.spec); //Lớp Specification --> constructor sao chép 
+    public ListSpecification getListSpec(){
+        return new ListSpecification(this.lst_spec); //Lớp Specification --> constructor sao chép 
     }
 
-    public void setSpec(Specification spec){
-        this.spec = new Specification(spec); 
+    public void setListSpec(ListSpecification lst_spec){
+        this.lst_spec = new ListSpecification(lst_spec); 
     }
     
     public Device_Type getDeviceType(){
@@ -97,14 +97,13 @@ public class Device {
     public void setPrice(double price){
         this.price = price;
     }
-
+    
     @Override
     public String toString(){
 //        return null;
     	Device d = new Device(this);
     	return "Device ID: " + d.getIdDevice() + "\n"
         		+ "Device Name: " + d.getNameDevice() + "\n"
-        		+ "Specification: " + d.getSpec() + "\n"
         		+ "Device Type: " + d.getDeviceType() + "\n"
         		+ "Price: " + d.getPrice() + "\n";
     }  
