@@ -23,38 +23,32 @@ public class ListSpecification {
 
     public ListSpecification() {
         this.ListSpec = new ArrayList<>();
-        this.length = 0;
     }
     
     public ListSpecification(ArrayList<Specification> ListSpec){
-        this.ListSpec = new ArrayList<Specification>(ListSpec);
-        this.length = ListSpec.size();
+        this.ListSpec = ListSpec;
     }
     
     public ListSpecification(Object ListObj){
         if (ListObj instanceof ListSpecification){
             ListSpecification listDT = new ListSpecification(ListSpec);
-            this.ListSpec = new ArrayList<Specification>(listDT.ListSpec);
-            this.length = listDT.length;
+            this.ListSpec = listDT.ListSpec;
         } else {
             ListSpecification listDT = new ListSpecification();
-            this.ListSpec = new ArrayList<Specification>(listDT.ListSpec);
-            this.length = listDT.length;
+            this.ListSpec = listDT.ListSpec;
         }
     }
         
     public ArrayList<Specification> getListSpec(){
-        return new ArrayList<Specification>(this.ListSpec);
+        return this.ListSpec;
     }
     
     public void setListSpec(ArrayList<Specification> ListSpec){
-        this.ListSpec = new ArrayList<Specification>(ListSpec);
-    }
-
-    public int getLengthListSpec(){
-        return this.length;
+        this.ListSpec = ListSpec;
     }
     
+    
+    // lấy tất cả trong csdl
     public ArrayList<Specification> ListSpec_MySQL(){
         java.sql.Connection conn = null;
         Statement stmt = null;
@@ -87,24 +81,26 @@ public class ListSpecification {
             }
         }
         
-        return new ArrayList<Specification>(listSpec); 
+        return listSpec; 
     }
     
    
-    // lấy danh sách các thông số bằng ID,...
+    // lấy danh sách các thông số bằng ID device
     public ArrayList<Specification> ListSpec_MySQL(String id){
         java.sql.Connection conn = null;
-        Statement stmt = null;
+        PreparedStatement stmt = null;
         ResultSet rs = null;
         ArrayList<Specification> listSpec = new ArrayList<Specification>();
         
         try {
             Model.Connect.Connection c = new Connection();
             conn = c.getJDBC();
-            stmt = conn.createStatement();
+            
 
-            String sql = "SELECT * FROM Specification where id_spec = " + id + ";"; // Thay "users" bằng bảng của bạn
-            rs = stmt.executeQuery(sql);
+            String sql = "SELECT * FROM Specification where id_device = ?"; // Thay "users" bằng bảng của bạn
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, id);
+            rs = stmt.executeQuery();
             while (rs.next()) {
                 String id_device = new String(rs.getString("id_device"));
                 String name_spec = new String(rs.getString("name_spec"));
@@ -124,7 +120,7 @@ public class ListSpecification {
             }
         }
         
-        return new ArrayList<Specification>(listSpec); 
+        return listSpec; 
     }
     
     
@@ -185,5 +181,57 @@ public class ListSpecification {
         lst_spec_new.add(spec);
         return lst_spec_new;
     }
+    
+    
+    // lấy thông số của một thiết bị
+    public ArrayList<Specification> getSpecID_Device(String id_device){
+        java.sql.Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
+        ArrayList<Specification> listSpec = new ArrayList<Specification>();
+        
+        try {
+            Model.Connect.Connection c = new Connection();
+            conn = c.getJDBC();
+           
+            
+
+            String sql = "SELECT * FROM Specification where id_device = ?"; // Thay "users" bằng bảng của bạn
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, id_device);
+            
+            rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                String id_device_spec = new String(rs.getString("id_device"));
+                String name_spec = new String(rs.getString("name_spec"));
+                String data_spec = new String(rs.getString("data_spec"));
+                Specification spec = new Specification(id_device_spec, name_spec, data_spec);
+                listSpec.add(spec);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return listSpec;
+    }
   
+    
+    public static void main(String[] args){
+        ListSpecification lst = new ListSpecification();
+        ArrayList<Specification> lst_spec = new ArrayList<Specification>(lst.ListSpec_MySQL("D003"));
+        
+        for (Specification d : lst_spec){
+            System.out.println(d.getData()); // done
+        }
+    }
 }

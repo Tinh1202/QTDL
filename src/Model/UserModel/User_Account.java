@@ -10,6 +10,12 @@ package Model.UserModel;
  */
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import Model.Connect.*;
+import Model.Delivery.Detail_DeliveryNote;
+import java.sql.SQLException;
+import java.sql.*;
 
 public class User_Account { // account login 
     private String username;
@@ -99,11 +105,67 @@ public class User_Account { // account login
         System.out.println("User " + this.username + " logged in at " + java.time.LocalDateTime.now());
     }
 
+    public User_Account getAccount_MySQL(String username, String password) {
+    java.sql.Connection conn = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    User_Account account = null;  // Đặt thành null để chỉ tạo khi có kết quả
+
+    try {
+        Model.Connect.Connection c = new Model.Connect.Connection();
+        conn = c.getJDBC();
+        String sql = "SELECT * FROM account WHERE username = ? AND password = ?"; // Thay "account" bằng tên bảng thực tế
+
+        // Chuẩn bị câu lệnh SQL với các tham số
+        stmt = conn.prepareStatement(sql);
+        stmt.setString(1, username);  // Tham số thứ nhất
+        stmt.setString(2, password);  // Tham số thứ hai
+
+        // Thực thi truy vấn
+        rs = stmt.executeQuery();
+
+        // Lấy dữ liệu từ ResultSet
+        if (rs.next()) {
+            account = new User_Account();
+            account.setUsername(rs.getString("username"));
+            account.setPassword(rs.getString("password"));
+            // Thiết lập thêm các thuộc tính khác của User_Account nếu có
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        // Đóng các tài nguyên
+        try {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    return account;
+}
+
+    
+    
     @Override
     public String toString() {
         return "User_Account{" +
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';
+    }
+    
+    
+    public static void main(String[] args){
+        User_Account account = new User_Account();
+        account = account.getAccount_MySQL("", "");
+        
+        if (account == null) {
+            System.out.print("null");
+        }
+        
     }
 }

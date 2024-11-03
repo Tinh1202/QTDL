@@ -61,6 +61,7 @@ public class ListDeviceType {
     }
 
     // Lấy danh sách loại thiết bị từ cơ sở dữ liệu
+    
     public ArrayList<Device_Type> getDeviceTypesFromDatabase() {
         java.sql.Connection conn = null;
         Statement stmt = null;

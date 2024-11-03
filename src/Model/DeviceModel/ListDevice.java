@@ -79,12 +79,24 @@ public class ListDevice {
                 String id_device = rs.getString("id_device");
                 String name_device = rs.getString("name_device");
                 double price = rs.getDouble("price");
-
-                ListSpecification lst_spec = new ListSpecification(); 
-                Device_Type dv = new Device_Type(rs.getString("device_type")); 
+                String id_type = rs.getString("id_type");
                 
-                Device device = new Device(id_device, name_device, lst_spec, dv, price);
-                devices.add(device);
+                // deivce {id_device, name_device, price, lst_devicetyoe, lst_specification}
+                
+                // Device Type Object
+                Device_Type dt = new Device_Type().getDeviceType_MySQL(id_type);
+                
+                // lst Specification
+                
+//              ListSpecification lst_spec = new ListSpecification(new ListSpecification().ListSpec_MySQL(id_device));
+                
+                ListSpecification lst_spec = new ListSpecification();
+                ArrayList<Specification> specs = new ArrayList<Specification>(lst_spec.ListSpec_MySQL(id_device));
+                lst_spec.setListSpec(specs);
+
+                Device d = new Device(id_device, name_device, lst_spec, dt, price);
+                
+                devices.add(d);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -98,7 +110,7 @@ public class ListDevice {
             }
         }
 
-        return new ArrayList<Device>(devices);
+        return devices;
     }
 
     // Hiển thị danh sách thiết bị
@@ -163,5 +175,17 @@ public class ListDevice {
         }
 
         return newDeviceList;
+    }
+    
+    public static void main(String[] args){
+        ListDevice l = new ListDevice();
+        ArrayList<Device> lst_device = new ArrayList<Device>(l.getDevicesFromDatabase());
+        
+        for (Device d : lst_device){
+            for (Specification s : d.getListSpec().getListSpec()){
+                System.out.println(s.getData());  // lỗi
+            }
+        }
+        
     }
 }

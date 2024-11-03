@@ -3,7 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Model.DeviceModel;
+import Model.Connect.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
+import java.sql.*;
 /**
  *
  * @author vntin
@@ -60,5 +65,51 @@ public class Device_Type {
                 + "Name device type: " + dv.getNameType() + "\n";
     }
     
+    // hàm lấy device type từ cột của device
+    public Device_Type getDeviceType_MySQL(String id){
+        java.sql.Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        Device_Type dt = null;  // Đặt thành null để chỉ tạo khi có kết quả
 
+    try {
+        Model.Connect.Connection c = new Model.Connect.Connection();
+        conn = c.getJDBC();
+        String sql = "SELECT * FROM device_type WHERE id_type = ?"; // Thay "account" bằng tên bảng thực tế
+
+        // Chuẩn bị câu lệnh SQL với các tham số
+        stmt = conn.prepareStatement(sql);
+        stmt.setString(1, id);  // Tham số thứ nhất
+
+        // Thực thi truy vấn
+        rs = stmt.executeQuery();
+
+        // Lấy dữ liệu từ ResultSet
+        if (rs.next()) {
+              dt = new Device_Type();
+              dt.setIdType(rs.getString("id_type"));
+              dt.setNameType(rs.getString("name_type"));
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        // Đóng các tài nguyên
+        try {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    return dt;
+    }
+    
+    public static void main(String[] args){
+        Device_Type dv = new Device_Type();
+        dv = dv.getDeviceType_MySQL("DT001");
+        System.out.println(dv.getNameType());
+    }
 }

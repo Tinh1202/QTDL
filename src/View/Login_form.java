@@ -4,9 +4,16 @@
  */
 package View;
 
+import Control.LoginControler;
 import java.awt.Image;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import Model.UserModel.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  *
@@ -35,6 +42,10 @@ public class Login_form extends javax.swing.JFrame {
         
         setResizable(false); 
     }
+
+    public Login_form(Login_form lf) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     /**
      */
     // </editor-fold>
@@ -42,6 +53,8 @@ public class Login_form extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextPane1 = new javax.swing.JTextPane();
         Input_username = new javax.swing.JTextField();
         Input_password = new javax.swing.JPasswordField();
         Login_button = new javax.swing.JButton();
@@ -50,9 +63,10 @@ public class Login_form extends javax.swing.JFrame {
         IconCheck_username = new javax.swing.JLabel();
         IconCheck_password = new javax.swing.JLabel();
 
+        jScrollPane1.setViewportView(jTextPane1);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Login form");
-        setPreferredSize(new java.awt.Dimension(500, 300));
 
         Input_username.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -61,6 +75,11 @@ public class Login_form extends javax.swing.JFrame {
         });
 
         Login_button.setText("Login");
+        Login_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Login_buttonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -108,14 +127,38 @@ public class Login_form extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_Input_usernameActionPerformed
 
-    private void setStateInputField(java.awt.event.ActionEvent evt){ // hàm kiểm tra trạng thái nhập liệu có đúng không
-    
+    private void Login_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Login_buttonActionPerformed
+        // TODO add your handling code here:
+        try {
+        String username = new String(this.Input_username.getText());
+        String password = new String(this.Input_password.getPassword());
+        LoginControler controller = new LoginControler();
+        boolean result = controller.CheckLoginState(username, password);
+        
+        if (result == true) {
+            System.out.println("True");
+        } else {
+            System.out.println("False");
+        }
+        } catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+    }//GEN-LAST:event_Login_buttonActionPerformed
+
+    private void setStateInputField(){ // hàm kiểm tra trạng thái nhập liệu có đúng không
+        
     }
     
-    
-    /**
-     * @param args the command line arguments
-     */
+//    public void getInfoAccount(){
+//        
+//        
+//        Login_button.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                getInfoAccount();  // Gọi phương thức getInfoAccount() khi nút được nhấn
+//            }
+//        });
+//    }
     
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -155,5 +198,7 @@ public class Login_form extends javax.swing.JFrame {
     private javax.swing.JPasswordField Input_password;
     private javax.swing.JTextField Input_username;
     private javax.swing.JButton Login_button;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextPane jTextPane1;
     // End of variables declaration//GEN-END:variables
 }

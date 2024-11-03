@@ -195,7 +195,7 @@ public class ListProduct_Receipt {
     public static void main(String[] args){
         ListProduct_Receipt a = new ListProduct_Receipt();
         ArrayList<Product_Receipt> lst = a.ListPR_MySQL();
-//        a.DisplayListPR();
+        a.DisplayListPR();
 //        ListProduct_Receipt p = new ListProduct_Receipt();
 //        System.out.print(p.getLengthListProductReceipt());
     }
