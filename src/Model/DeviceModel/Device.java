@@ -42,7 +42,7 @@ public class Device {
     //CONTRUCTOR COPY --> Sao chép tất cả các thuộc tính của đối tượng đó
     public Device (Object device){
         if (device instanceof Device) { //Kiểm tra đối tượng device có phải kiểu Device
-            Device dev = new Device(device);
+            Device dev = (Device) device;
             this.id_device = new String(dev.getIdDevice()); // Lấy giá trị id_device từ đối tượng dev gán cho hiện tại
             this.name_device = new String(dev.getNameDevice());
             this.lst_spec = new ListSpecification(dev.getListSpec());  // tương tự
@@ -104,7 +104,20 @@ public class Device {
     	Device d = new Device(this);
     	return "Device ID: " + d.getIdDevice() + "\n"
         		+ "Device Name: " + d.getNameDevice() + "\n"
-        		+ "Device Type: " + d.getDeviceType() + "\n"
+        		+ "Device Type: " + d.getDeviceType().getNameType() + "\n"
         		+ "Price: " + d.getPrice() + "\n";
     }  
+    
+    
+    
+     // done
+    public static void main(String[] args){
+        String id = new String("001");
+        String name = new String("jshd");
+        Device_Type dt = new Device_Type("001", "ádas");
+        ListSpecification lst_spec = new ListSpecification();
+        double price = 12323232.00;
+        Device d = new Device(id, name, lst_spec, dt, price);
+        System.out.println(d.toString());
+    }
 }

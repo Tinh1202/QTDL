@@ -44,7 +44,7 @@ public class Supplier {
     // CONSTRUCTOR SAO CHÉP
     public Supplier(Object supplier) {
         if (supplier instanceof Supplier) {
-            Supplier s = new Supplier(supplier);
+            Supplier s = (Supplier) supplier;
             this.ID_supplier = s.getIDSupplier();
             this.name_supplier = s.getNameSupplier();
             this.address_supplier = s.getAddressSupplier();
@@ -102,12 +102,22 @@ public class Supplier {
     @Override
     public String toString(){ // return id: id; name: name; phone: phone; address: address
 //        return null;
-    	return "ID: " + this.getIDSupplier() + "; "
-        + "Name: " + this.getNameSupplier() + "; "
-        + "Phone: " + this.getPhoneSupplier() + "; "
-        + "Address: " + this.getAddressSupplier() + "; "
-        + "Country: " + this.getCountry().toString();
+    	return "ID: " + this.getIDSupplier() + "\n"
+        + "Name: " + this.getNameSupplier() + "\n"
+        + "Phone: " + this.getPhoneSupplier() + "\n"
+        + "Address: " + this.getAddressSupplier() + "\n"
+        + "Country: " + this.getCountry().getNameCountry() + "\n";
     }
     
-    
+    // done
+    public static void main(String[] args){
+        String id = new String("001");
+        String name = new String("cbfhf");
+        String phone = new String("02373743");
+        String address = new String("iqwewyasd");
+        Country c = new Country("001", "vn");
+        Supplier s = new Supplier(id, name, phone, address, c);
+        
+        System.out.println(s.toString());
+    }
 }

@@ -36,7 +36,7 @@ public class ListManuf {
     // Constructor sao chép đối tượng
     public ListManuf(Object listObj) {
         if (listObj instanceof ListManuf) {
-            ListManuf listManuf = new ListManuf (listObj);
+            ListManuf listManuf = (ListManuf) listObj;
             this.listManufacturer = new ArrayList<Manufacturer>(listManuf.listManufacturer);
             this.length = listManuf.length;
         } else {
@@ -72,14 +72,14 @@ public class ListManuf {
             conn = connection.getJDBC();
             stmt = conn.createStatement();
 
-            String sql = "SELECT * FROM Manufacturer"; 
+            String sql = "SELECT * FROM manufacturer"; 
             rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
                 String id_manuf = rs.getString("id_manuf");
                 String name_manuf = rs.getString("name_manuf");
-                String country_id = rs.getString("country_id");
-                Country country = new Country(country_id); 
+                String country_id = rs.getString("id_country");
+                Country country = new Country().getCountry_MySQL(country_id); 
 
                 Manufacturer manufacturer = new Manufacturer(id_manuf, name_manuf, country);
                 manufacturers.add(manufacturer);
@@ -161,5 +161,60 @@ public class ListManuf {
         }
 
         return newManufacturerList;
+    }
+    
+    public Manufacturer getManuf_MySQL(String id_manuf){
+        java.sql.Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        Manufacturer manuf = null;  // Đặt thành null để chỉ tạo khi có kết quả
+
+    try {
+        Model.Connect.Connection c = new Model.Connect.Connection();
+        conn = c.getJDBC();
+        String sql = "SELECT * FROM manufacturer WHERE id_manuf = ?"; // Thay "account" bằng tên bảng thực tế
+
+        // Chuẩn bị câu lệnh SQL với các tham số
+        stmt = conn.prepareStatement(sql);
+        stmt.setString(1, id_manuf);  // Tham số thứ nhất
+
+        // Thực thi truy vấn
+        rs = stmt.executeQuery();
+
+        // Lấy dữ liệu từ ResultSet
+        if (rs.next()) {
+              manuf = new Manufacturer();
+              manuf.setIdManuf(rs.getString("id_manuf"));
+              manuf.setNameManuf(rs.getString("name_manuf"));
+              Country country = new Country().getCountry_MySQL(rs.getString("id_country"));
+              manuf.setCountry(country);
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        // Đóng các tài nguyên
+        try {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    return manuf;
+    }
+    
+    
+    public static void main(String[] args){
+        Manufacturer manuf = new ListManuf().getManuf_MySQL("M001");
+        System.out.println(manuf.getCountry().toString());  // done
+        
+        ArrayList<Manufacturer> lst = new ListManuf().getManufacturersFromDatabase();
+        
+        for (Manufacturer m : lst){
+            System.out.println(m.toString());   // done
+        }
     }
 }

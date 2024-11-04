@@ -36,7 +36,7 @@ public class ListDevice {
     // Constructor sao chép đối tượng
     public ListDevice(Object listObj) {
         if (listObj instanceof ListDevice) {
-            ListDevice listDev = new ListDevice(listDevice);
+            ListDevice listDev = (ListDevice) listObj;
             this.listDevice = new ArrayList<Device>(listDev.listDevice);
             this.length = listDev.length;
         } else {
@@ -72,7 +72,7 @@ public class ListDevice {
             conn = connection.getJDBC();
             stmt = conn.createStatement();
 
-            String sql = "SELECT * FROM Device"; 
+            String sql = "SELECT * FROM device"; 
             rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
@@ -111,6 +111,53 @@ public class ListDevice {
         }
 
         return devices;
+    }
+    
+    
+    
+    // lấy device theo id_device
+    public Device getDevice_MySQL(String id){
+        java.sql.Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        Device device = new Device();
+        
+        try {
+            Model.Connect.Connection c = new Connection();
+            conn = c.getJDBC();
+            
+
+            String sql = "SELECT * FROM device where id_device = ?"; // Thay "users" bằng bảng của bạn
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, id);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                String id_device = new String(rs.getString("id_device"));
+                String name_device = new String(rs.getString("name_device"));
+                String id_type = new String(rs.getString("id_type"));
+                double price = rs.getDouble("price");
+                
+                Device_Type dt = new Device_Type().getDeviceType_MySQL(id_type);
+                
+                ListSpecification lst_spec = new ListSpecification();
+                ArrayList<Specification> specs = new ArrayList<Specification>(lst_spec.ListSpec_MySQL(id_device));
+                lst_spec.setListSpec(specs);
+
+                device = new Device(id_device, name_device, lst_spec, dt, price);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return device;
     }
 
     // Hiển thị danh sách thiết bị
@@ -182,10 +229,11 @@ public class ListDevice {
         ArrayList<Device> lst_device = new ArrayList<Device>(l.getDevicesFromDatabase());
         
         for (Device d : lst_device){
-            for (Specification s : d.getListSpec().getListSpec()){
-                System.out.println(s.getData());  // lỗi
-            }
+            System.out.println(d.toString()); // done
         }
         
+        Device device = new ListDevice().getDevice_MySQL("D001");
+        System.out.println(device.toString()); // done
     }
+   
 }

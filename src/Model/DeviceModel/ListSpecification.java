@@ -31,7 +31,7 @@ public class ListSpecification {
     
     public ListSpecification(Object ListObj){
         if (ListObj instanceof ListSpecification){
-            ListSpecification listDT = new ListSpecification(ListSpec);
+            ListSpecification listDT = (ListSpecification) ListObj;
             this.ListSpec = listDT.ListSpec;
         } else {
             ListSpecification listDT = new ListSpecification();

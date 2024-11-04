@@ -15,6 +15,8 @@ import java.util.Iterator;
  *
  * @author vntin
  */
+
+// danh sách các chi tiết phiếu xuất
 public class ListDetailPRN {
     private ArrayList<Detail_PRN> ListPRN;
     private int length;

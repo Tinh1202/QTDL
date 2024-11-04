@@ -30,7 +30,7 @@ public class Manufacturer {
     // Constructor sao chép
     public Manufacturer(Object manufacturer){
     	if (manufacturer instanceof Manufacturer) { //Kiểm tra đối tượng device có phải kiểu Device
-            Manufacturer manuf = new Manufacturer(manufacturer);
+            Manufacturer manuf = (Manufacturer) manufacturer;
             this.id_manuf = new String(manuf.id_manuf);
             this.name_manuf = new String(manuf.name_manuf);
             this.country = new Country(manuf.country);
@@ -79,6 +79,16 @@ public class Manufacturer {
 //        return null;
         return "Manufacturer ID: " + manuf.getIdManuf() + "\n"
         + "Manufacturer Name: " + manuf.getNameManuf() + "\n"
-        + "Country: " + manuf.getCountry() + "\n";
+        + "Country: " + manuf.getCountry().getNameCountry() + "\n";
+    }
+    
+    // done
+    public static void main(String[] args){
+        Manufacturer m = new Manufacturer();
+        String id = new String("001");
+        String name = new String("abc");
+        Country c = new Country("001", "VN");
+        Manufacturer n = new Manufacturer(id, name, c);
+        System.out.println(n.toString());
     }
 }

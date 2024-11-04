@@ -17,7 +17,7 @@ public class Connection {
         java.sql.Connection conn = null;
         try {
             conn = DriverManager.getConnection(url, username, password);
-            System.out.println("Kết nối thành công đến cơ sở dữ liệu!");
+//            System.out.println("Kết nối thành công đến cơ sở dữ liệu!");
         } catch (SQLException e) {
             System.out.println("Lỗi kết nối: " + e.getMessage());
         }

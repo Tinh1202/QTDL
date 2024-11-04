@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
+// danh sách các phiếu nhập
 public class ListDeliveryNote {
     
     private ArrayList<Delivery_Note>  ListDN;
@@ -34,7 +36,7 @@ public class ListDeliveryNote {
     
     public ListDeliveryNote(Object ListObj){
         if (ListObj instanceof ListDeliveryNote){
-            ListDeliveryNote listDT = new ListDeliveryNote(ListDN);
+            ListDeliveryNote listDT = (ListDeliveryNote) ListObj;
             this.ListDN = new ArrayList<Delivery_Note>(listDT.ListDN);
             this.length = listDT.length;
         } else {
@@ -67,7 +69,7 @@ public class ListDeliveryNote {
             conn = c.getJDBC();
             stmt = conn.createStatement();
 
-            String sql = "SELECT * FROM Delivery_Note;"; // Thay "users" bằng bảng của bạn
+            String sql = "SELECT * FROM delivery_note;"; // Thay "users" bằng bảng của bạn
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 String id_dn = new String(rs.getString("id_dn"));
@@ -182,4 +184,17 @@ public class ListDeliveryNote {
         lst_dn_new.add(dn);
         return lst_dn_new;
     }
+    
+    
+   
+    // done
+    public static void main(String[] args){
+        ArrayList<Delivery_Note> lst_dn = new ArrayList<Delivery_Note>(new ListDeliveryNote().ListDN_MySQL());
+        
+        for (Delivery_Note dn : lst_dn) {
+            System.out.println(dn.toString());
+        }
+    }
+    
+    
 }

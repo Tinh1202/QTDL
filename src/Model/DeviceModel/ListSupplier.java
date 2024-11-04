@@ -36,16 +36,15 @@ package Model.DeviceModel;
 
     // Constructor sao chép đối tượng
     public ListSupplier(Object listObj) {
-        if (listObj instanceof ListSupplier) {
-            ListSupplier listSupplierObj = new ListSupplier (listObj);
-            this.listSupplier = new ArrayList<Supplier>(listSupplierObj.listSupplier);
-            this.length = listSupplierObj.length;
-        } else {
-            ListSupplier listSupplierObj = new ArrayList <ListSupplier> (listObj);
-            this.listSupplier = new ArrayList<ListSupplier>(listSupplierObj.listSupplier);
-            this.length = listSupplierObj.length;
-        }
+    if (listObj instanceof ListSupplier) {
+        ListSupplier listSupplierObj = (ListSupplier) listObj;
+        this.listSupplier = new ArrayList<>(listSupplierObj.listSupplier); // Sử dụng ArrayList<Supplier>
+        this.length = listSupplierObj.length;
+    } else {
+        this.listSupplier = new ArrayList<>(); // Khởi tạo mảng trống nếu không phải là ListSupplier
+        this.length = 0;
     }
+}
 
     // Getter và Setter cho listSupplier
     public ArrayList<Supplier> getListSupplier() {
@@ -73,16 +72,16 @@ package Model.DeviceModel;
             conn = connection.getJDBC();
             stmt = conn.createStatement();
 
-            String sql = "SELECT * FROM Supplier"; 
+            String sql = "SELECT * FROM supplier"; 
             rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
-                String ID_supplier = rs.getString("ID_supplier");
+                String ID_supplier = rs.getString("id_supplier");
                 String name_supplier = rs.getString("name_supplier");
                 String address_supplier = rs.getString("address_supplier");
                 String phone_supplier = rs.getString("phone_supplier");
-                String country_id = rs.getString("country_id");
-                Country country = new Country(country_id);
+                String country_id = rs.getString("id_country");
+                Country country = new Country().getCountry_MySQL(country_id);
 
                 Supplier supplier = new Supplier(ID_supplier, name_supplier, address_supplier, phone_supplier, country);
                 suppliers.add(supplier);
@@ -99,7 +98,54 @@ package Model.DeviceModel;
             }
         }
 
-        return new ArrayList<Supplier>(suppliers);
+        return suppliers;
+    }
+    
+    // lấy theo id supplier
+    public Supplier getSupplier_MySQL(String id_supplier){
+        java.sql.Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        Supplier s = null;
+        
+        Supplier supplier = new Supplier();
+        
+        try {
+            Model.Connect.Connection connection = new Connection();
+            conn = connection.getJDBC();
+
+            String sql = "SELECT * FROM Supplier where id_supplier = ?"; 
+            
+            stmt = conn.prepareStatement(sql);
+
+            stmt.setString(1, id_supplier);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String ID_supplier = rs.getString("id_supplier");
+                String name_supplier = rs.getString("name_supplier");
+                String address_supplier = rs.getString("address_supplier");
+                String phone_supplier = rs.getString("phone_supplier");
+                
+                String country_id = rs.getString("id_country");
+                Country country = new Country().getCountry_MySQL(country_id);
+
+                supplier = new Supplier(ID_supplier, name_supplier, address_supplier, phone_supplier, country);
+                
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return supplier;
     }
 
     // Hiển thị danh sách nhà cung cấp
@@ -164,5 +210,16 @@ package Model.DeviceModel;
         }
 
         return newSupplierList;
+    }
+    
+    public static void main(String[] args){
+        Supplier s = new ListSupplier().getSupplier_MySQL("SUP001");
+        System.out.println(s.toString()); // done
+        
+        ArrayList<Supplier> lst_supplier = new ArrayList<Supplier>(new ListSupplier().getSuppliersFromDatabase());
+        
+        for (Supplier su : lst_supplier){  
+            System.out.println(su.toString()); // done
+        }
     }
 }

@@ -31,7 +31,7 @@ public class Device_Type {
     
     public Device_Type(Object device_type){
         if (device_type instanceof Device_Type){
-            Device_Type dv = new Device_Type(device_type);
+            Device_Type dv = (Device_Type) device_type;
             
             this.id_type = new String(dv.id_type);
             this.name_type = new String(dv.name_type);
@@ -107,9 +107,11 @@ public class Device_Type {
     return dt;
     }
     
+    // done
     public static void main(String[] args){
         Device_Type dv = new Device_Type();
         dv = dv.getDeviceType_MySQL("DT001");
         System.out.println(dv.getNameType());
+        System.out.println(dv.toString());
     }
 }

@@ -12,6 +12,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.time.LocalDate;
+import java.sql.*;
+import Model.Connect.Connection;
+
 
 public class ListStaff {
     ArrayList<Staff> ListStaff;
@@ -72,10 +75,10 @@ public class ListStaff {
             String sql = "SELECT * FROM Staff;"; // Replace with your actual table name
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
-                String id = rs.getString("id");
-                String fullname = rs.getString("fullname");
-                String phoneNumber = rs.getString("phone_number");
-                LocalDate birthDate = rs.getDate("birthDate").toLocalDate();
+                String id = rs.getString("id_staff");
+                String fullname = rs.getString("fullname_staff");
+                String phoneNumber = rs.getString("phone_staff");
+                LocalDate birthDate = rs.getDate("birthDate_staff").toLocalDate();
                 String position = rs.getString("position");
                 Staff staff = new Staff(id, fullname, phoneNumber, birthDate, position);
                 listStaff.add(staff);
@@ -95,6 +98,47 @@ public class ListStaff {
         return listStaff;
     }
 
+    
+    public Staff Staff_MySQL(String id_staff){
+        java.sql.Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Staff st = new Staff();
+
+    try {
+        Model.Connect.Connection c = new Connection() {};
+        conn = c.getJDBC();
+
+        String sql = "SELECT * FROM staff WHERE id_staff = ?";
+        pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, id_staff);
+
+        rs = pstmt.executeQuery();
+        if (rs.next()) {
+            
+            String id_staff_ = rs.getString("id_staff");
+            String fullname_staff = rs.getString("fullname_staff");
+            String phone_staff = rs.getString("phone_staff");
+            
+            LocalDate staff_birthdate = rs.getDate("birthDate_staff").toLocalDate();
+            String position = rs.getString("position");
+            
+            st = new Staff(id_staff, fullname_staff, phone_staff, staff_birthdate, position);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    return new Staff(st);
+    }
     // Display the list of staff
     public void DisplayListStaff() {
         ArrayList<Staff> listStaff = ListStaff_MySQL();
@@ -153,5 +197,19 @@ public class ListStaff {
         newList.add(new Staff(staff));
         return newList;
     }
-}
+    
+    
+   
+    
+    public static void main(String[] args){
+        Staff st = new Staff(new ListStaff().Staff_MySQL("S001"));
+        System.out.println(st.toString());  // done
+        
+        ArrayList<Staff> lst_staff = new ListStaff().ListStaff_MySQL();
+        
+        for(Staff s : lst_staff){
+            System.out.println(s.toString()); // done
+        }
+    }
+ }
 

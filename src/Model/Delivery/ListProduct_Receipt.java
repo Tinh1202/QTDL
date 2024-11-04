@@ -8,6 +8,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.*;
 import Model.Connect.Connection;
+import Model.DeviceModel.ListSupplier;
+import Model.DeviceModel.Supplier;
+import Model.UserModel.ListStaff;
+import Model.UserModel.Staff;
 import java.time.LocalDateTime;
 
 import java.util.ArrayList;
@@ -58,7 +62,7 @@ public class ListProduct_Receipt {
     java.sql.Connection conn = null;
     Statement stmt = null;
     ResultSet rs = null;
-    ArrayList<Product_Receipt> listPR = new ArrayList<>(); // mảng các phiếu nhập
+    ArrayList<Product_Receipt> listPR = new ArrayList<Product_Receipt>(); // mảng các phiếu nhập
     
     try {
         Model.Connect.Connection c = new Connection();
@@ -78,12 +82,11 @@ public class ListProduct_Receipt {
                     new ListDetailPRN().ListDPRN_MySQL(id_prn)
             );
             
-            // tạo đối tượng của danh sách list_detailPRN
-//            ListDetailPRN lst_detailprn = new ListDetailPRN(list_detailPRN);
-//            ArrayList<Detail_PRN> lst_new = new ArrayList<>
-            // tạo đối tượng phiếu nhập
+            Staff st = new ListStaff().Staff_MySQL(id_staff);
+            Supplier sup = new ListSupplier().getSupplier_MySQL(id_supplier);
+            
             Product_Receipt pr = new Product_Receipt();
-            pr.setId_PRN(id_prn); pr.setDateImport(date_import); pr.setId_staff(id_staff); pr.setId_supplier(id_supplier);
+            pr.setId_PRN(id_prn); pr.setDateImport(date_import); pr.set_staff(st); pr.set_supplier(sup);
             pr.setListDetailPRN(list_detailPRN);
 
 
@@ -113,9 +116,9 @@ public class ListProduct_Receipt {
         for (Product_Receipt pr : lst_pr) {
             System.out.println("Id prn: " + pr.getId_PRN() + "\n");
             System.out.println("Date import: " + pr.getDateImport() + "\n");
-            System.out.println("Id staff: " + pr.getId_staff() + "\n");
-            System.out.println("Id supplier: " + pr.getId_supplier() + "\n");
-            System.out.println("Detail PRN: " + pr.getListDetailPRN() + "\n");
+            System.out.println("staff: " + pr.get_staff().getFullname() + "\n");
+            System.out.println("supplier: " + pr.get_supplier().getNameSupplier() + "\n");
+            System.out.println("Detail PRN: " + pr.getListDetailPRN().toString() + "\n");
         } 
     }
     
@@ -124,82 +127,80 @@ public class ListProduct_Receipt {
     
     
     
-    public ArrayList<Product_Receipt> DeleteHeadPRFromList(ArrayList<Product_Receipt> lst_pr){ // xóa ở đầu
-        ArrayList<Product_Receipt> lst_pr_new = new ArrayList<Product_Receipt>(lst_pr);
-        lst_pr_new.remove(0);
-        return lst_pr_new;
-    }
+//    public ArrayList<Product_Receipt> DeleteHeadPRFromList(ArrayList<Product_Receipt> lst_pr){ // xóa ở đầu
+//        ArrayList<Product_Receipt> lst_pr_new = new ArrayList<Product_Receipt>(lst_pr);
+//        lst_pr_new.remove(0);
+//        return lst_pr_new;
+//    }
+//    
+//    public ArrayList<Product_Receipt> DeleteTailPRFromList(ArrayList<Product_Receipt> lst_pr){ // xóa ở cuối
+//        ArrayList<Product_Receipt> lst_pr_new = new ArrayList<Product_Receipt>(lst_pr);
+//        lst_pr_new.remove(lst_pr_new.size() - 1);
+//        return lst_pr_new;
+//    }
+//    
+//    public ArrayList<Product_Receipt> DeleteIdPRNFromList(ArrayList<Product_Receipt> lst_pr, String id) { // xóa theo id_prn
+//        ArrayList lst_pr_new = new ArrayList(lst_pr);
+//        
+//        Iterator<Product_Receipt> iterator = lst_pr_new.iterator();
+//        while (iterator.hasNext()) {
+//            Product_Receipt pr = iterator.next();
+//            if (pr.getId_PRN().equalsIgnoreCase(id)) {
+//                iterator.remove();
+//            }
+//        }
+//        return new ArrayList<Product_Receipt>(lst_pr_new);
+//    }
+//    
+//    public ArrayList<Product_Receipt> DeleteIdStaffFromList(ArrayList<Product_Receipt> lst_pr, String id) { // xóa theo id_staff
+//        ArrayList lst_pr_new = new ArrayList(lst_pr);
+//        
+//        Iterator<Product_Receipt> iterator = lst_pr_new.iterator();
+//        while (iterator.hasNext()) {
+//            Product_Receipt pr = iterator.next();
+//            if (pr.get_staff().equalsIgnoreCase(id)) {
+//                iterator.remove();
+//            }
+//        }
+//        return new ArrayList<Product_Receipt>(lst_pr_new);
+//    }
+//    public ArrayList<Product_Receipt> DeleteIdSupplierFromList(ArrayList<Product_Receipt> lst_pr, String id) { // xóa theo id_supplier
+//        ArrayList lst_pr_new = new ArrayList(lst_pr);
+//        
+//        Iterator<Product_Receipt> iterator = lst_pr_new.iterator();
+//        while (iterator.hasNext()) {
+//            Product_Receipt pr = iterator.next();
+//            if (pr.get_supplier().equalsIgnoreCase(id)) {
+//                iterator.remove();
+//            }
+//        }
+//        return new ArrayList<Product_Receipt>(lst_pr_new);
+//    }
+//    public ArrayList<Product_Receipt> DeleteIdStaffFromList(ArrayList<Product_Receipt> lst_pr, LocalDateTime date_delete) { // xóa theo date
+//        ArrayList lst_pr_new = new ArrayList(lst_pr);
+//        
+//        Iterator<Product_Receipt> iterator = lst_pr_new.iterator();
+//        while (iterator.hasNext()) {
+//            Product_Receipt pr = iterator.next();
+//            if (pr.getDateImport().isEqual(date_delete)) {
+//                iterator.remove();
+//            }
+//        }
+//        return new ArrayList<Product_Receipt>(lst_pr_new);
+//    }
+//    public ArrayList<Product_Receipt> AddPRToList(ArrayList<Product_Receipt> lst_pr, Product_Receipt pr){
+//        ArrayList<Product_Receipt> lst_pr_new = new ArrayList<Product_Receipt>(lst_pr);
+//        Product_Receipt pr_new = new Product_Receipt(pr);
+//        
+//        lst_pr_new.add(pr);
+//        return lst_pr_new;
+//    }
     
-    public ArrayList<Product_Receipt> DeleteTailPRFromList(ArrayList<Product_Receipt> lst_pr){ // xóa ở cuối
-        ArrayList<Product_Receipt> lst_pr_new = new ArrayList<Product_Receipt>(lst_pr);
-        lst_pr_new.remove(lst_pr_new.size() - 1);
-        return lst_pr_new;
-    }
-    
-    public ArrayList<Product_Receipt> DeleteIdPRNFromList(ArrayList<Product_Receipt> lst_pr, String id) { // xóa theo id_prn
-        ArrayList lst_pr_new = new ArrayList(lst_pr);
-        
-        Iterator<Product_Receipt> iterator = lst_pr_new.iterator();
-        while (iterator.hasNext()) {
-            Product_Receipt pr = iterator.next();
-            if (pr.getId_PRN().equalsIgnoreCase(id)) {
-                iterator.remove();
-            }
-        }
-        return new ArrayList<Product_Receipt>(lst_pr_new);
-    }
-    public ArrayList<Product_Receipt> DeleteIdStaffFromList(ArrayList<Product_Receipt> lst_pr, String id) { // xóa theo id_staff
-        ArrayList lst_pr_new = new ArrayList(lst_pr);
-        
-        Iterator<Product_Receipt> iterator = lst_pr_new.iterator();
-        while (iterator.hasNext()) {
-            Product_Receipt pr = iterator.next();
-            if (pr.getId_staff().equalsIgnoreCase(id)) {
-                iterator.remove();
-            }
-        }
-        return new ArrayList<Product_Receipt>(lst_pr_new);
-    }
-    public ArrayList<Product_Receipt> DeleteIdSupplierFromList(ArrayList<Product_Receipt> lst_pr, String id) { // xóa theo id_supplier
-        ArrayList lst_pr_new = new ArrayList(lst_pr);
-        
-        Iterator<Product_Receipt> iterator = lst_pr_new.iterator();
-        while (iterator.hasNext()) {
-            Product_Receipt pr = iterator.next();
-            if (pr.getId_supplier().equalsIgnoreCase(id)) {
-                iterator.remove();
-            }
-        }
-        return new ArrayList<Product_Receipt>(lst_pr_new);
-    }
-    public ArrayList<Product_Receipt> DeleteIdStaffFromList(ArrayList<Product_Receipt> lst_pr, LocalDateTime date_delete) { // xóa theo date
-        ArrayList lst_pr_new = new ArrayList(lst_pr);
-        
-        Iterator<Product_Receipt> iterator = lst_pr_new.iterator();
-        while (iterator.hasNext()) {
-            Product_Receipt pr = iterator.next();
-            if (pr.getDateImport().isEqual(date_delete)) {
-                iterator.remove();
-            }
-        }
-        return new ArrayList<Product_Receipt>(lst_pr_new);
-    }
-    public ArrayList<Product_Receipt> AddPRToList(ArrayList<Product_Receipt> lst_pr, Product_Receipt pr){
-        ArrayList<Product_Receipt> lst_pr_new = new ArrayList<Product_Receipt>(lst_pr);
-        Product_Receipt pr_new = new Product_Receipt(pr);
-        
-        lst_pr_new.add(pr);
-        return lst_pr_new;
-    }
-    
+    // done
     public static void main(String[] args){
         ListProduct_Receipt a = new ListProduct_Receipt();
         ArrayList<Product_Receipt> lst = a.ListPR_MySQL();
         a.DisplayListPR();
-//        ListProduct_Receipt p = new ListProduct_Receipt();
-//        System.out.print(p.getLengthListProductReceipt());
+        
     }
-    
-
 }
-//

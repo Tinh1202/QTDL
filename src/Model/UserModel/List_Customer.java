@@ -15,6 +15,8 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
+import Model.Connect.Connection;
+
 
 public class List_Customer {
     private ArrayList<Customer> ListCustomer;
@@ -75,9 +77,9 @@ public class List_Customer {
             String sql = "SELECT * FROM Customer;"; // Replace with your actual table name
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
-                String id = rs.getString("id");
-                String fullname = rs.getString("fullname");
-                String phoneNumber = rs.getString("phone_number");
+                String id = rs.getString("id_customer");
+                String fullname = rs.getString("fullname_customer");
+                String phoneNumber = rs.getString("phone_customer");
                 LocalDate birthDate = rs.getDate("birthDate").toLocalDate();
                 String address = rs.getString("address");
                 Customer customer = new Customer(id, fullname, phoneNumber, birthDate, address);
@@ -98,6 +100,47 @@ public class List_Customer {
         return listCustomer;
     }
 
+    
+    public Customer getCustomer_MySQL(String id_customer){
+        java.sql.Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Customer customer = new Customer();
+
+    try {
+        Model.Connect.Connection c = new Connection() {};
+        conn = c.getJDBC();
+
+        String sql = "SELECT * FROM customer WHERE id_customer = ?";
+        pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, id_customer);
+
+        rs = pstmt.executeQuery();
+        if (rs.next()) {
+            
+            String id_customer_n = rs.getString("id_customer");
+            String fullname_customer = rs.getString("fullname_customer");
+            String phone_customer = rs.getString("phone_customer");
+            
+            LocalDate birthDate = rs.getDate("birthDate").toLocalDate();
+            String address = rs.getString("address");
+            customer = new Customer(id_customer_n, fullname_customer, phone_customer, birthDate, address);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    return new Customer(customer);
+    }
+    
     // Display the list of customers
     public void DisplayListCustomer() {
         ArrayList<Customer> listCustomer = ListCustomer_MySQL();
@@ -155,6 +198,17 @@ public class List_Customer {
         ArrayList<Customer> newList = new ArrayList<>(this.ListCustomer);
         newList.add(new Customer(customer));
         return newList;
+    }
+    
+    public static void main(String[] args){
+        Customer c = new List_Customer().getCustomer_MySQL("C001"); // done
+        System.out.println(c.toString());
+        
+        
+        ArrayList<Customer> lst_customer = new ArrayList<Customer>(new List_Customer().ListCustomer_MySQL());
+        for (Customer cu : lst_customer){
+            System.out.println(cu.toString()); // done
+        }
     }
 }
 

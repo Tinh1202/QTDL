@@ -15,6 +15,8 @@ import java.util.Iterator;
  *
  * @author vntin
  */
+
+// danh sách các chi tiết phiếu nhập
 public class ListDetailDN {
     private ArrayList<Detail_DeliveryNote>  ListDDN;
     private int length;
@@ -31,7 +33,7 @@ public class ListDetailDN {
     
     public ListDetailDN(Object ListObj){
         if (ListObj instanceof ListDetailDN){
-            ListDetailDN listDT = new ListDetailDN(ListDDN);
+            ListDetailDN listDT = (ListDetailDN) ListObj;
             this.ListDDN = new ArrayList<Detail_DeliveryNote>(listDT.ListDDN);
             this.length = listDT.length;
         } else {
@@ -86,19 +88,20 @@ public class ListDetailDN {
         return new ArrayList<Detail_DeliveryNote>(listDDN); 
     }
     
-    public ArrayList<Detail_DeliveryNote> ListDDN_MySQL(String id) {
+    
+    public ArrayList<Detail_DeliveryNote> ListDDN_MySQL(String id_dn) {
         ArrayList<Detail_DeliveryNote> listDDN = new ArrayList<Detail_DeliveryNote>();  
         String sql = "SELECT * FROM Detail_DeliveryNote WHERE id_dn = ?"; // Sử dụng câu truy vấn với tham số
         try (java.sql.Connection conn = new Model.Connect.Connection().getJDBC();
             PreparedStatement stmt = conn.prepareStatement(sql)) {  
-            stmt.setString(1, id); // Truyền tham số vào câu truy vấn
+            stmt.setString(1, id_dn); // Truyền tham số vào câu truy vấn
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    String id_dn = new String(rs.getString("id_dn"));
+                    String id_dn_new = new String(rs.getString("id_dn"));
                     String id_device = new String(rs.getString("id_device"));
                     int quantity = rs.getInt("quantity");
                     double price = rs.getDouble("price");
-                    Detail_DeliveryNote ddn = new Detail_DeliveryNote(id_dn, id_device, quantity, price);
+                    Detail_DeliveryNote ddn = new Detail_DeliveryNote(id_dn_new, id_device, quantity, price);
                     listDDN.add(ddn);
                 }
             }
@@ -193,4 +196,12 @@ public class ListDetailDN {
     
     
     
+    // done
+    public static void main(String[] args){
+        ArrayList<Detail_DeliveryNote> lst_ddn = new ArrayList<Detail_DeliveryNote>(new ListDetailDN().ListDDN_MySQL("DN001"));
+        
+        for (Detail_DeliveryNote ddn : lst_ddn){
+            System.out.println(ddn.toString());
+        }
+    }
 }

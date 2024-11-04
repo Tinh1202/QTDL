@@ -130,16 +130,17 @@ public class Login_form extends javax.swing.JFrame {
     private void Login_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Login_buttonActionPerformed
         // TODO add your handling code here:
         try {
-        String username = new String(this.Input_username.getText());
-        String password = new String(this.Input_password.getPassword());
-        LoginControler controller = new LoginControler();
-        boolean result = controller.CheckLoginState(username, password);
+            String username = new String(this.Input_username.getText());
+            String password = new String(this.Input_password.getPassword());
+            LoginControler controller = new LoginControler();
+            boolean result = controller.CheckLoginState(username, password);
         
-        if (result == true) {
-            System.out.println("True");
-        } else {
-            System.out.println("False");
-        }
+            if (result == true) {
+                
+            } else {
+                System.out.println("False");
+            }
+        
         } catch(Exception e){
             System.out.println(e.getMessage());
         }

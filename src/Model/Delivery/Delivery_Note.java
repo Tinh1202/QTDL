@@ -13,17 +13,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.*;
 import Model.Connect.Connection;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 /**
  *
  * @author vntin
  */
+
+// phiếu xuất gồm nhiều các chi tiết phiếu xuất
+
+
 public class Delivery_Note { // class phiếu xuất kho sản phẩm đến khách hàng
     private String id_dn; // mã phiếu nhập
     private String id_staff;  // mã nhân viên
     private String id_customer; // mã khách hàng
     private LocalDateTime datetime_shipment; // thời gian xuất phiếu
-    private ArrayList<Detail_DeliveryNote> ListDetailDN; // danh sách các chi tiết phiếu
+    private ArrayList<Detail_DeliveryNote> ListDetailDN; // danh sách các chi tiết phiếu xuất
     
     
     public Delivery_Note() {
@@ -91,40 +96,10 @@ public class Delivery_Note { // class phiếu xuất kho sản phẩm đến kh�
         return "Id delivery note: " + this.getId_Dn() + "\n"
                 + "Id staff: " + this.getId_Staff() + "\n"
                 + "Id Customer: " + this.getId_Customer() + "\n"
-                + "Date get delivery note: " + this.datetime_shipment.format(DateTimeFormatter.ISO_DATE);
+                + "Date get delivery note: " + this.datetime_shipment.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
-//    public Delivery_Note getDN_MySQL(String id){
-//        java.sql.Connection conn = null;
-//        Statement stmt = null;
-//        ResultSet rs = null;
-//        Delivery_Note dn = new Delivery_Note();
-//        try {
-//            Model.Connect.Connection c = new Connection();
-//            conn = c.getJDBC();
-//            stmt = conn.createStatement();
-//
-//            String sql = "SELECT * FROM Delivery_Note WHERE id_dn=" + id +";"; // Thay "users" bằng bảng của bạn
-//            rs = stmt.executeQuery(sql);
-//            while (rs.next()) {
-//                String id_dn = new String(rs.getString("id_dn"));
-//                String id_staff = new String(rs.getString("id_staff"));
-//                String id_customer = new String(rs.getString("id_customer"));
-//                LocalDateTime datetime_shipment = rs.getTimestamp("datetime_shipment").toLocalDateTime();
-//                dn.setId_Dn(id_dn); dn.setId_Staff(id_staff); dn.setIdCustomer(id_customer); dn.setLocalDateTime(datetime_shipment);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                if (rs != null) rs.close();
-//                if (stmt != null) stmt.close();
-//                if (conn != null) conn.close();
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        return new Delivery_Note(dn);
-//    }
+    
+    
     public Delivery_Note getDN_MySQL(String id) {
     java.sql.Connection conn = null;
     PreparedStatement pstmt = null;
@@ -132,7 +107,7 @@ public class Delivery_Note { // class phiếu xuất kho sản phẩm đến kh�
     Delivery_Note dn = new Delivery_Note();
     try {
         Model.Connect.Connection c = new Connection();
-        conn = c.getJDBC();      
+        conn = c.getJDBC();
         String sql = "SELECT * FROM Delivery_Note WHERE id_dn = ?";
         pstmt = conn.prepareStatement(sql);
         pstmt.setString(1, id);
@@ -141,11 +116,18 @@ public class Delivery_Note { // class phiếu xuất kho sản phẩm đến kh�
             String id_dn = rs.getString("id_dn");
             String id_staff = rs.getString("id_staff");
             String id_customer = rs.getString("id_customer");
-            LocalDateTime datetime_shipment = rs.getTimestamp("date_shipment").toLocalDateTime();
+            
+            // Kiểm tra null cho trường datetime_shipment
+            Timestamp timestamp = rs.getTimestamp("date_shipment");
+            LocalDateTime datetime_shipment = null;
+            if (timestamp != null) {
+                datetime_shipment = timestamp.toLocalDateTime();
+            }
+            
             dn.setId_Dn(id_dn);
             dn.setId_Staff(id_staff);
             dn.setIdCustomer(id_customer);
-            dn.setLocalDateTime(datetime_shipment);
+            dn.setLocalDateTime(datetime_shipment); // Đặt LocalDateTime nếu có
         }
     } catch (SQLException e) {
         e.printStackTrace();
@@ -158,7 +140,12 @@ public class Delivery_Note { // class phiếu xuất kho sản phẩm đến kh�
             e.printStackTrace();
         }
     }
-    return new Delivery_Note(dn);
+    return dn; // Trả về đối tượng đã thiết lập
 }
+    
+    public static void main(String[] args){
+        Delivery_Note dn = new Delivery_Note().getDN_MySQL("DN001"); // done
+        System.out.println(dn.toString());
+    } 
 
 }

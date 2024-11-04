@@ -38,7 +38,7 @@ public class Detail_DeliveryNote { // chi tiết phiếu xuất kho cho một th
     
     public Detail_DeliveryNote(Object detail_dn){
         if(detail_dn instanceof Detail_DeliveryNote){
-            Detail_DeliveryNote ddn = new Detail_DeliveryNote(detail_dn);
+            Detail_DeliveryNote ddn = (Detail_DeliveryNote) detail_dn;
             this.id_dn = new String(ddn.id_dn);
             this.id_device = new String(ddn.id_device);
             this.quantity = ddn.quantity;
@@ -66,16 +66,16 @@ public class Detail_DeliveryNote { // chi tiết phiếu xuất kho cho một th
         return new String(this.id_device);
     }
     public void setId_device(String id_device){
-        this.id_dn = new String(id_device);
+        this.id_device = new String(id_device);
     }
     public int getQuantity(){
-        return quantity;
+        return this.quantity;
     }
     public void setQuantity(int quantity){
         this.quantity = quantity;
     }
     public double getPrice(){
-        return price;
+        return this.price;
     }
     public void setPrice(double price){
         this.price = price;
@@ -87,44 +87,12 @@ public class Detail_DeliveryNote { // chi tiết phiếu xuất kho cho một th
         return "Id Delivery Note: " + this.getId_dn() + "\n"
                 + "Id device: " + this.getId_device() + "\n"
                 + "Quantity: " + this.getQuantity() + "\n"
-                + "Price: " + this.getPrice() + "\n";
+                + "Price: " + this.Calculate_TotalPrice() + "\n";
     }
     
     
-//    public Detail_DeliveryNote getDDN_MySQL(String id){
-//        java.sql.Connection conn = null;
-//        Statement stmt = null;
-//        ResultSet rs = null;
-//        Detail_DeliveryNote ddn = new Detail_DeliveryNote();
-//        try {
-//            Model.Connect.Connection c = new Connection();
-//            conn = c.getJDBC();
-//            stmt = conn.createStatement();
-//
-//            String sql = "SELECT * FROM Detail_DeliveryNote WHERE id_dn=" + id +";"; // Thay "users" bằng bảng của bạn
-//            rs = stmt.executeQuery(sql);
-//            while (rs.next()) {
-//                String id_dn = new String(rs.getString("id_dn"));
-//                String id_device = new String(rs.getString("id_device"));
-//                int quantity = rs.getInt("quantity");
-//                double price = rs.getDouble("price");
-//                ddn.setId_dn(id_dn); ddn.setId_device(id_device); ddn.setQuantity(quantity); ddn.setPrice(price);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                if (rs != null) rs.close();
-//                if (stmt != null) stmt.close();
-//                if (conn != null) conn.close();
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        
-//        return new Detail_DeliveryNote(ddn);
-//    }
-    public Detail_DeliveryNote getDDN_MySQL(String id) {
+    //  lấy chi tiết phiếu nhập theo từng thiết bị
+    public Detail_DeliveryNote getDDN_MySQL(String id_device) {
     java.sql.Connection conn = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
@@ -134,19 +102,19 @@ public class Detail_DeliveryNote { // chi tiết phiếu xuất kho cho một th
         Model.Connect.Connection c = new Connection();
         conn = c.getJDBC();
 
-        String sql = "SELECT * FROM Detail_DeliveryNote WHERE id_dn = ?";
+        String sql = "SELECT * FROM detail_deliverynote WHERE id_device = ?";
         pstmt = conn.prepareStatement(sql);
-        pstmt.setString(1, id);
+        pstmt.setString(1, id_device);
 
         rs = pstmt.executeQuery();
         if (rs.next()) {
             String id_dn = rs.getString("id_dn");
-            String id_device = rs.getString("id_device");
+            String id_dev = rs.getString("id_device");
             int quantity = rs.getInt("quantity");
             double price = rs.getDouble("price");
 
             ddn.setId_dn(id_dn);
-            ddn.setId_device(id_device);
+            ddn.setId_device(id_dev);
             ddn.setQuantity(quantity);
             ddn.setPrice(price);
         }
@@ -162,7 +130,13 @@ public class Detail_DeliveryNote { // chi tiết phiếu xuất kho cho một th
         }
     }
 
-    return new Detail_DeliveryNote(ddn);
+    return ddn;
 }
+    
+     // done
+    public static void main(String[] args){
+        Detail_DeliveryNote ddn = new Detail_DeliveryNote().getDDN_MySQL("D003");
+        System.out.println(ddn.toString());
+    }
 
 }

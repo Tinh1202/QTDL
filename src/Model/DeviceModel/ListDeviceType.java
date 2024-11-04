@@ -36,7 +36,7 @@ public class ListDeviceType {
     // Constructor sao chép đối tượng
     public ListDeviceType(Object listObj) {
         if (listObj instanceof ListDeviceType) {
-            ListDeviceType listDevType = new ListDeviceType (listObj);
+            ListDeviceType listDevType = (ListDeviceType) listObj;
             this.listDeviceType = new ArrayList<Device_Type>(listDevType.listDeviceType);
             this.length = listDevType.length;
         } else {
@@ -160,5 +160,16 @@ public class ListDeviceType {
         }
 
         return newDeviceTypeList;
+    }
+    
+    
+    // done
+    public static void main(String[] args){
+        ListDeviceType l = new ListDeviceType();
+        ArrayList<Device_Type> lst = new ArrayList<>(l.getDeviceTypesFromDatabase());
+        
+        for (Device_Type t : lst){
+            System.out.println(t.getIdType());
+        }
     }
 }
