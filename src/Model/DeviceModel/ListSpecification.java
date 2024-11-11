@@ -63,10 +63,13 @@ public class ListSpecification {
             String sql = "SELECT * FROM Specification;"; // Thay "users" bằng bảng của bạn
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
-                String id_device = new String(rs.getString("id_device"));
-                String name_spec = new String(rs.getString("name_spec"));
+                String id_device = new String(rs.getString("id_specification"));
+                String name_spec = new String(rs.getString("name_specification"));
                 String data_spec = new String(rs.getString("data_spec"));
-                Specification spec = new Specification(id_device, name_spec, data_spec);
+                String id_manufacturer = new String(rs.getString("id_manufacturer"));
+                Manufacturer manuf = new ListManuf().getManuf_MySQL(id_manufacturer);
+                
+                Specification spec = new Specification(id_device, name_spec, data_spec, manuf);
                 listSpec.add(spec);
             }
         } catch (SQLException e) {
@@ -85,28 +88,31 @@ public class ListSpecification {
     }
     
    
-    // lấy danh sách các thông số bằng ID device
-    public ArrayList<Specification> ListSpec_MySQL(String id){
+    // lấy thông số kỹ thuật bằng id
+    public Specification Spec_MySQL(String id_spec){
         java.sql.Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        ArrayList<Specification> listSpec = new ArrayList<Specification>();
-        
+//      ArrayList<Specification> listSpec = new ArrayList<Specification>();
+        Specification spec = new Specification();
+
         try {
             Model.Connect.Connection c = new Connection();
             conn = c.getJDBC();
             
-
-            String sql = "SELECT * FROM Specification where id_device = ?"; // Thay "users" bằng bảng của bạn
+            String sql = "SELECT * FROM Specification where id_specification = ?"; // Thay "users" bằng bảng của bạn
             stmt = conn.prepareStatement(sql);
-            stmt.setString(1, id);
+            stmt.setString(1, id_spec);
+            
             rs = stmt.executeQuery();
             while (rs.next()) {
-                String id_device = new String(rs.getString("id_device"));
-                String name_spec = new String(rs.getString("name_spec"));
+                String id_specification = new String(rs.getString("id_specification"));
+                String name_spec = new String(rs.getString("name_specification"));
                 String data_spec = new String(rs.getString("data_spec"));
-                Specification spec = new Specification(id_device, name_spec, data_spec);
-                listSpec.add(spec);
+                String id_manuf = new String(rs.getString("id_manufacturer"));
+                Manufacturer manuf = new ListManuf().getManuf_MySQL(id_manuf);
+                
+                spec = new Specification(id_specification, name_spec, data_spec, manuf);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -120,7 +126,7 @@ public class ListSpecification {
             }
         }
         
-        return listSpec; 
+        return spec; 
     }
     
     
@@ -183,8 +189,8 @@ public class ListSpecification {
     }
     
     
-    // lấy thông số của một thiết bị
-    public ArrayList<Specification> getSpecID_Device(String id_device){
+    // lấy danh sách thông số của một thiết bị
+    public ArrayList<Specification> getSpec_From_ID_Device(String id_device){
         java.sql.Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -197,17 +203,18 @@ public class ListSpecification {
            
             
 
-            String sql = "SELECT * FROM Specification where id_device = ?"; // Thay "users" bằng bảng của bạn
+            String sql = "SELECT * FROM device_specification where id_device = ?"; // Thay "users" bằng bảng của bạn
+            
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, id_device);
             
             rs = stmt.executeQuery();
             
             while (rs.next()) {
-                String id_device_spec = new String(rs.getString("id_device"));
-                String name_spec = new String(rs.getString("name_spec"));
-                String data_spec = new String(rs.getString("data_spec"));
-                Specification spec = new Specification(id_device_spec, name_spec, data_spec);
+                String id_specification = new String(rs.getString("id_specification"));
+                
+                Specification spec = Spec_MySQL(id_specification);
+                
                 listSpec.add(spec);
             }
         } catch (SQLException e) {
@@ -226,12 +233,11 @@ public class ListSpecification {
     }
   
     
+    //done
     public static void main(String[] args){
-        ListSpecification lst = new ListSpecification();
-        ArrayList<Specification> lst_spec = new ArrayList<Specification>(lst.ListSpec_MySQL("D003"));
-        
-        for (Specification d : lst_spec){
-            System.out.println(d.getData()); // done
+        ArrayList<Specification> lst = new ListSpecification().getSpec_From_ID_Device("DEV001");
+        for (Specification s : lst){
+            System.out.println(s.toString());
         }
     }
 }

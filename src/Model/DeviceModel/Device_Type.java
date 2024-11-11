@@ -75,7 +75,7 @@ public class Device_Type {
     try {
         Model.Connect.Connection c = new Model.Connect.Connection();
         conn = c.getJDBC();
-        String sql = "SELECT * FROM device_type WHERE id_type = ?"; // Thay "account" bằng tên bảng thực tế
+        String sql = "SELECT * FROM devicetype WHERE id_devicetype = ?"; // Thay "account" bằng tên bảng thực tế
 
         // Chuẩn bị câu lệnh SQL với các tham số
         stmt = conn.prepareStatement(sql);
@@ -87,8 +87,8 @@ public class Device_Type {
         // Lấy dữ liệu từ ResultSet
         if (rs.next()) {
               dt = new Device_Type();
-              dt.setIdType(rs.getString("id_type"));
-              dt.setNameType(rs.getString("name_type"));
+              dt.setIdType(rs.getString("id_devicetype"));
+              dt.setNameType(rs.getString("name_devicetype"));
         }
 
     } catch (SQLException e) {

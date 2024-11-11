@@ -73,12 +73,12 @@ public class ListDeviceType {
             conn = connection.getJDBC();
             stmt = conn.createStatement();
 
-            String sql = "SELECT * FROM Device_Type"; 
+            String sql = "SELECT * FROM devicetype"; 
             rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
-                String id_type = rs.getString("id_type");
-                String name_type = rs.getString("name_type");
+                String id_type = rs.getString("id_devicetype");
+                String name_type = rs.getString("name_devicetype");
 
                 Device_Type deviceType = new Device_Type(id_type, name_type);
                 deviceTypes.add(deviceType);

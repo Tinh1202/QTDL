@@ -98,7 +98,7 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
         return new Supplier(this.supplier);
     }
     public void set_supplier(Supplier supplier){
-        this.supplier = new Supplier(this.supplier);
+        this.supplier = new Supplier(supplier);
     }
     
     public LocalDateTime getDateImport(){ // localDateTime type
@@ -150,7 +150,7 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
         Model.Connect.Connection c = new Connection();
         conn = c.getJDBC();
 
-        String sql = "SELECT * FROM Product_Receipt WHERE id_prn = ?";
+        String sql = "SELECT * FROM product_receipt WHERE id_product_receipt = ?";
         pstmt = conn.prepareStatement(sql);
         pstmt.setString(1, id);
 
@@ -158,7 +158,7 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
         
         rs = pstmt.executeQuery();
         if (rs.next()) {
-            String id_prn = rs.getString("id_prn");
+            String id_prn = rs.getString("id_product_receipt");
             LocalDateTime date_import = rs.getTimestamp("date_import").toLocalDateTime();
             String id_staff = rs.getString("id_staff");
             String id_supplier = rs.getString("id_supplier");
@@ -188,8 +188,8 @@ public class Product_Receipt {  // phiếu nhập ( Nhập sản phẩm vào kho
 }
 
     public static void main(String[] args){
-        Product_Receipt pr = new Product_Receipt().getPR_MySQL("PR001");
-        System.out.println(pr.toString());
+        Product_Receipt pr = new Product_Receipt().getPR_MySQL("PR002");
+        System.out.println(pr.get_staff().getFullname());
     }
     
 }
