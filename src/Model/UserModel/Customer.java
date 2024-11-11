@@ -51,7 +51,7 @@ public class Customer extends Person {
                 ", fullname='" + getFullname() + '\'' +
                 ", phone_number='" + getPhone_number() + '\'' +
                 ", birthdate=" + getBirthDate() +
-                ", address='" + address + '\'' +
+                ", address='" + this.address + '\'' +
                 '}';
     }
 }

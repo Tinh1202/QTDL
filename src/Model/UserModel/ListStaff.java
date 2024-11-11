@@ -80,7 +80,11 @@ public class ListStaff {
                 String phoneNumber = rs.getString("phone_staff");
                 LocalDate birthDate = rs.getDate("birthDate_staff").toLocalDate();
                 String position = rs.getString("position");
-                Staff staff = new Staff(id, fullname, phoneNumber, birthDate, position);
+                String id_account = rs.getString("id_account");
+                
+                User_Account account = new User_Account().getAccount_MySQL(id_account);
+                               
+                Staff staff = new Staff(id, fullname, phoneNumber, birthDate, position, account);
                 listStaff.add(staff);
             }
         } catch (SQLException e) {
@@ -123,7 +127,11 @@ public class ListStaff {
             LocalDate staff_birthdate = rs.getDate("birthDate_staff").toLocalDate();
             String position = rs.getString("position");
             
-            st = new Staff(id_staff, fullname_staff, phone_staff, staff_birthdate, position);
+            String id_account = rs.getString("id_account");
+            
+            User_Account account = new User_Account().getAccount_MySQL(id_account);
+            
+            st = new Staff(id_staff, fullname_staff, phone_staff, staff_birthdate, position, account);
         }
     } catch (SQLException e) {
         e.printStackTrace();
@@ -202,13 +210,14 @@ public class ListStaff {
    
     
     public static void main(String[] args){
-        Staff st = new Staff(new ListStaff().Staff_MySQL("S001"));
+        Staff st = new Staff(new ListStaff().Staff_MySQL("STF001"));
         System.out.println(st.toString());  // done
         
         ArrayList<Staff> lst_staff = new ListStaff().ListStaff_MySQL();
         
         for(Staff s : lst_staff){
             System.out.println(s.toString()); // done
+            System.out.println(s.getAccount().toString());
         }
     }
  }

@@ -108,16 +108,4 @@ public class Supplier {
         + "Address: " + this.getAddressSupplier() + "\n"
         + "Country: " + this.getCountry().getNameCountry() + "\n";
     }
-    
-    // done
-    public static void main(String[] args){
-        String id = new String("001");
-        String name = new String("cbfhf");
-        String phone = new String("02373743");
-        String address = new String("iqwewyasd");
-        Country c = new Country("001", "vn");
-        Supplier s = new Supplier(id, name, phone, address, c);
-        
-        System.out.println(s.toString());
-    }
 }

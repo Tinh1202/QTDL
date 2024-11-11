@@ -155,7 +155,7 @@ public class Country {
     
     // done
     public static void main(String[] args){
-        Country c = new Country().getCountry_MySQL("CN");
+        Country c = new Country();
         System.out.println(c.toString());
         
         ArrayList<Country> lst_c = c.getCountry_MySQL();

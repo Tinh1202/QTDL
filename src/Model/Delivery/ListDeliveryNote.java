@@ -58,6 +58,8 @@ public class ListDeliveryNote {
         return this.length;
     }
     
+    
+    // lấy danh sách các phiếu xuất
     public ArrayList<Delivery_Note> ListDN_MySQL(){
         java.sql.Connection conn = null;
         Statement stmt = null;
@@ -69,10 +71,10 @@ public class ListDeliveryNote {
             conn = c.getJDBC();
             stmt = conn.createStatement();
 
-            String sql = "SELECT * FROM delivery_note;"; // Thay "users" bằng bảng của bạn
+            String sql = "SELECT * FROM deliverynote;"; // Thay "users" bằng bảng của bạn
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
-                String id_dn = new String(rs.getString("id_dn"));
+                String id_dn = new String(rs.getString("id_deliverynote"));
                 String id_staff = new String(rs.getString("id_staff"));
                 String id_customer = new String(rs.getString("id_customer"));
                 LocalDateTime datetime_shipment = rs.getTimestamp("date_shipment").toLocalDateTime();

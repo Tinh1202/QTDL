@@ -15,52 +15,60 @@ import java.util.ArrayList;
  * @author vntin
  */
 public class Detail_DeliveryNote { // chi tiết phiếu xuất kho cho một thiết bị
-    private String id_dn; // mã phiếu xuất (delivery note) 
+    private String id_detail_deliverynote;
+    private String id_deliverynote; // mã phiếu xuất (delivery note) 
     private String id_device; // mã thiết bị
     private int quantity; // số lượng 
-    private double price;
 
     
     // default constructor
     public Detail_DeliveryNote() {
-        id_dn = new String("");
-        id_device = new String("");
-        quantity = 0;
-        price = 0.0;
+        this.id_detail_deliverynote = new String("");
+        this.id_deliverynote = new String("");
+        this.id_device = new String("");
+        this.quantity = 0;
     }
 
-    public Detail_DeliveryNote(String id_dn, String id_device, int quantity, double price) {
-        this.id_dn = new String(id_dn);
+    public Detail_DeliveryNote(String id_detail_deliverynote, String id_deliverynote, String id_device, int quantity) {
+        this.id_detail_deliverynote = new String(id_detail_deliverynote);
+        this.id_deliverynote = new String(id_deliverynote);
         this.id_device = new String(id_device);
         this.quantity = quantity;
-        this.price = price;
     }
     
     public Detail_DeliveryNote(Object detail_dn){
         if(detail_dn instanceof Detail_DeliveryNote){
             Detail_DeliveryNote ddn = (Detail_DeliveryNote) detail_dn;
-            this.id_dn = new String(ddn.id_dn);
+            this.id_detail_deliverynote = new String(ddn.id_detail_deliverynote);
+            this.id_deliverynote = new String(ddn.id_deliverynote);
             this.id_device = new String(ddn.id_device);
             this.quantity = ddn.quantity;
-            this.price = ddn.price;
         } else{
             Detail_DeliveryNote ddn = new Detail_DeliveryNote();
-            this.id_dn = new String(ddn.id_dn);
+            this.id_detail_deliverynote = new String(ddn.id_detail_deliverynote);
+            this.id_deliverynote = new String(ddn.id_deliverynote);
             this.id_device = new String(ddn.id_device);
             this.quantity = ddn.quantity;
-            this.price = ddn.price;
         }
     }
     
-    private double Calculate_TotalPrice(){ // tính tổng đơn giá = số lượng * đơn giá
-        return (double) this.getQuantity() * this.getPrice();
+//    private double Calculate_TotalPrice(){ // tính tổng đơn giá = số lượng * đơn giá
+//        return (double) this.getQuantity() * this.getPrice();
+//    }
+    
+    public void setIdDetail_dn(String id_detail_deliverynote){
+        this.id_detail_deliverynote = new String(id_detail_deliverynote);
+    }
+    
+    public String getIdDetail_dn(){
+        return this.id_detail_deliverynote;
     }
     
     public String getId_dn(){
-        return new String(this.id_dn);
+        return new String(this.id_deliverynote);
     }
     public void setId_dn(String id_dn){
-        this.id_dn = new String(id_dn);
+        this.id_deliverynote = new String(id_dn);
     }
     public String getId_device(){
         return new String(this.id_device);
@@ -74,20 +82,20 @@ public class Detail_DeliveryNote { // chi tiết phiếu xuất kho cho một th
     public void setQuantity(int quantity){
         this.quantity = quantity;
     }
-    public double getPrice(){
-        return this.price;
-    }
-    public void setPrice(double price){
-        this.price = price;
-    }
+//    public double getPrice(){
+//        return this.price;
+//    }
+//    public void setPrice(double price){
+//        this.price = price;
+//    }
     
     
     @Override
     public String toString(){
         return "Id Delivery Note: " + this.getId_dn() + "\n"
                 + "Id device: " + this.getId_device() + "\n"
-                + "Quantity: " + this.getQuantity() + "\n"
-                + "Price: " + this.Calculate_TotalPrice() + "\n";
+                + "Quantity: " + this.getQuantity() + "\n";    
+    
     }
     
     
@@ -108,15 +116,16 @@ public class Detail_DeliveryNote { // chi tiết phiếu xuất kho cho một th
 
         rs = pstmt.executeQuery();
         if (rs.next()) {
-            String id_dn = rs.getString("id_dn");
+            String id_detail_deliverynote = rs.getString("id_detail_deliverynote");
+            String id_deliverynote = rs.getString("id_deliverynote");
             String id_dev = rs.getString("id_device");
             int quantity = rs.getInt("quantity");
-            double price = rs.getDouble("price");
+//            double price = rs.getDouble("price");
 
-            ddn.setId_dn(id_dn);
+            ddn.setIdDetail_dn(id_detail_deliverynote);
+            ddn.setId_dn(id_deliverynote);
             ddn.setId_device(id_dev);
             ddn.setQuantity(quantity);
-            ddn.setPrice(price);
         }
     } catch (SQLException e) {
         e.printStackTrace();
@@ -135,7 +144,7 @@ public class Detail_DeliveryNote { // chi tiết phiếu xuất kho cho một th
     
      // done
     public static void main(String[] args){
-        Detail_DeliveryNote ddn = new Detail_DeliveryNote().getDDN_MySQL("D003");
+        Detail_DeliveryNote ddn = new Detail_DeliveryNote().getDDN_MySQL("DEV001");
         System.out.println(ddn.toString());
     }
 

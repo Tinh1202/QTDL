@@ -79,7 +79,7 @@ public class ListDevice {
                 String id_device = rs.getString("id_device");
                 String name_device = rs.getString("name_device");
                 double price = rs.getDouble("price");
-                String id_type = rs.getString("id_type");
+                String id_type = rs.getString("id_devicetype");
                 
                 // deivce {id_device, name_device, price, lst_devicetyoe, lst_specification}
                 
@@ -91,7 +91,7 @@ public class ListDevice {
 //              ListSpecification lst_spec = new ListSpecification(new ListSpecification().ListSpec_MySQL(id_device));
                 
                 ListSpecification lst_spec = new ListSpecification();
-                ArrayList<Specification> specs = new ArrayList<Specification>(lst_spec.ListSpec_MySQL(id_device));
+                ArrayList<Specification> specs = new ArrayList<Specification>(lst_spec.getSpec_From_ID_Device(id_device));
                 lst_spec.setListSpec(specs);
 
                 Device d = new Device(id_device, name_device, lst_spec, dt, price);
@@ -134,13 +134,13 @@ public class ListDevice {
             while (rs.next()) {
                 String id_device = new String(rs.getString("id_device"));
                 String name_device = new String(rs.getString("name_device"));
-                String id_type = new String(rs.getString("id_type"));
+                String id_type = new String(rs.getString("id_devicetype"));
                 double price = rs.getDouble("price");
                 
                 Device_Type dt = new Device_Type().getDeviceType_MySQL(id_type);
                 
                 ListSpecification lst_spec = new ListSpecification();
-                ArrayList<Specification> specs = new ArrayList<Specification>(lst_spec.ListSpec_MySQL(id_device));
+                ArrayList<Specification> specs = new ArrayList<Specification>(lst_spec.getSpec_From_ID_Device(id_device));
                 lst_spec.setListSpec(specs);
 
                 device = new Device(id_device, name_device, lst_spec, dt, price);
@@ -232,7 +232,7 @@ public class ListDevice {
             System.out.println(d.toString()); // done
         }
         
-        Device device = new ListDevice().getDevice_MySQL("D001");
+        Device device = new ListDevice().getDevice_MySQL("DEV001");
         System.out.println(device.toString()); // done
     }
    
