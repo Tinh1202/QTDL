@@ -76,12 +76,14 @@ public class ListManuf {
             rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
-                String id_manuf = rs.getString("id_manuf");
-                String name_manuf = rs.getString("name_manuf");
+                String id_manuf = rs.getString("id_manufacturer");
+                String name_manuf = rs.getString("name_manufacturer");
                 String country_id = rs.getString("id_country");
+                String phone = rs.getString("phone_manufacturer");
+                String address = rs.getString("address_manufacturer");
                 Country country = new Country().getCountry_MySQL(country_id); 
 
-                Manufacturer manufacturer = new Manufacturer(id_manuf, name_manuf, country);
+                Manufacturer manufacturer = new Manufacturer(id_manuf, name_manuf, address, phone, country);
                 manufacturers.add(manufacturer);
             }
         } catch (SQLException e) {
@@ -172,7 +174,7 @@ public class ListManuf {
     try {
         Model.Connect.Connection c = new Model.Connect.Connection();
         conn = c.getJDBC();
-        String sql = "SELECT * FROM manufacturer WHERE id_manuf = ?"; // Thay "account" bằng tên bảng thực tế
+        String sql = "SELECT * FROM manufacturer WHERE id_manufacturer = ?"; // Thay "account" bằng tên bảng thực tế
 
         // Chuẩn bị câu lệnh SQL với các tham số
         stmt = conn.prepareStatement(sql);
@@ -184,9 +186,11 @@ public class ListManuf {
         // Lấy dữ liệu từ ResultSet
         if (rs.next()) {
               manuf = new Manufacturer();
-              manuf.setIdManuf(rs.getString("id_manuf"));
-              manuf.setNameManuf(rs.getString("name_manuf"));
+              manuf.setIdManuf(rs.getString("id_manufacturer"));
+              manuf.setNameManuf(rs.getString("name_manufacturer"));
               Country country = new Country().getCountry_MySQL(rs.getString("id_country"));
+              manuf.setAddressManuf(rs.getString("address_manufacturer"));
+              manuf.setPhoneManuf(rs.getString("phone_manufacturer"));
               manuf.setCountry(country);
         }
 
@@ -208,7 +212,7 @@ public class ListManuf {
     
     
     public static void main(String[] args){
-        Manufacturer manuf = new ListManuf().getManuf_MySQL("M001");
+        Manufacturer manuf = new ListManuf().getManuf_MySQL("MAN001");
         System.out.println(manuf.getCountry().toString());  // done
         
         ArrayList<Manufacturer> lst = new ListManuf().getManufacturersFromDatabase();

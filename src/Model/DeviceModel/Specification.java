@@ -19,18 +19,20 @@ public class Specification { // lớp thông số kỹ thuật
     private String id_spec;
     private String name_spec; // tên thông số
     private String data;   // số liệu kỹ thuật
-    
+    private Manufacturer manuf;
     
     public Specification() {
         this.name_spec = new String("");
         this.data = new String("");
         this.id_spec = new String("");
+        this.manuf = new Manufacturer();
     }
     
-    public Specification(String id_spec, String name_spec, String data){
+    public Specification(String id_spec, String name_spec, String data, Manufacturer manuf){
         this.id_spec = new String(id_spec);
         this.name_spec = new String(name_spec);
         this.data = new String(data);
+        this.manuf = new Manufacturer(manuf);
     }
     
     public Specification(Object spec){
@@ -39,11 +41,13 @@ public class Specification { // lớp thông số kỹ thuật
             this.name_spec = new String(spec_new.name_spec);
             this.data = new String(spec_new.data);
             this.id_spec = new String(spec_new.id_spec);
+            this.manuf = new Manufacturer(spec_new.manuf);
         } else {
             Specification spec_new = new Specification();
             this.name_spec = new String(spec_new.name_spec);
             this.data = new String(spec_new.data);
             this.id_spec = new String(spec_new.id_spec);
+            this.manuf = new Manufacturer(spec_new.manuf);
         }
     }
     
@@ -71,22 +75,26 @@ public class Specification { // lớp thông số kỹ thuật
         this.id_spec = new String(id_spec);
     }
     
+    public void setManuf(Manufacturer manuf){
+        this.manuf = new Manufacturer(manuf);
+    }
+    
+    public Manufacturer getManuf(){
+        return this.manuf;
+    }
+    
     @Override
     public String toString(){
         Specification spec = new Specification(this);
         return "Id specification: " + this.getIdSpec() + "\n"
                 + "Name specification: " + spec.getNameSpec() + "\n"
-                + "Data specification: " + spec.getData() + "\n";
+                + "Data specification: " + spec.getData() + "\n"
+                + "Manufacturer: " + spec.manuf.getNameManuf();
     }
     
     // done
     public static void main(String[] args){
-        String id = new String("001");
-        String name = new String("294md");
-        String data = new String("127sadskdj");
         
-        Specification s = new Specification(id, name, data);
-        System.out.println(s.toString());
     }
     
 }

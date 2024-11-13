@@ -73,12 +73,12 @@ public class ListDeviceType {
             conn = connection.getJDBC();
             stmt = conn.createStatement();
 
-            String sql = "SELECT * FROM Device_Type"; 
+            String sql = "SELECT * FROM devicetype"; 
             rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
-                String id_type = rs.getString("id_type");
-                String name_type = rs.getString("name_type");
+                String id_type = rs.getString("id_devicetype");
+                String name_type = rs.getString("name_devicetype");
 
                 Device_Type deviceType = new Device_Type(id_type, name_type);
                 deviceTypes.add(deviceType);
@@ -162,7 +162,19 @@ public class ListDeviceType {
         return newDeviceTypeList;
     }
     
-    
+        public Device_Type findDeviceTypeById(String id) {
+    // Lấy danh sách thiết bị từ cơ sở dữ liệu
+    ArrayList<Device_Type> deviceTypes = getDeviceTypesFromDatabase();
+
+    // Duyệt qua danh sách và tìm loại thiết bị có id_type tương ứng
+    for (Device_Type deviceType : deviceTypes) {
+        if (deviceType.getIdType().equalsIgnoreCase(id)) {
+            return deviceType; // Trả về đối tượng Device_Type nếu tìm thấy
+        }
+    }
+
+    return null; // Nếu không tìm thấy, trả về null
+}
     // done
     public static void main(String[] args){
         ListDeviceType l = new ListDeviceType();

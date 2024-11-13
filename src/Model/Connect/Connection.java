@@ -6,11 +6,11 @@ import java.sql.SQLException;
 import java.sql.*;
 
 public class Connection {
-    private final String url = "jdbc:mysql://localhost:3306/qlmt";  // Thay thế bằng thông tin đúng
+    private final String url = "jdbc:mysql://localhost:3306/bmt";  // Thay thế bằng thông tin đúng
 
 
     private final String username = "root";  // Thay thế bằng username của bạn
-    private final String password = "tvo229033@gmail";  // Thay thế bằng mật khẩu của bạn
+    private final String password = "Binh0505";  // Thay thế bằng mật khẩu của bạn
     
     // Phương thức kết nối tới MySQL
     public java.sql.Connection getJDBC() throws SQLException {
