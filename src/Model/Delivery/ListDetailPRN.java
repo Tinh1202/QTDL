@@ -237,4 +237,13 @@ public class ListDetailPRN {
         return lst_prn_new;
     }
    
+    public ArrayList<Detail_PRN> DeleteDetail_Element(ArrayList<Detail_PRN> lst_prn, Detail_PRN detail){
+        for (Detail_PRN d : lst_prn){
+            if (d.equals(detail)){
+                lst_prn.remove(detail);
+            }
+        }
+        return lst_prn;
+    }
+    
 }
