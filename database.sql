@@ -25,7 +25,8 @@ DROP TABLE IF EXISTS `account`;
 CREATE TABLE `account` (
   `username` varchar(50) NOT NULL,
   `password` varchar(200) DEFAULT NULL,
-  PRIMARY KEY (`username`)
+  `id_account` varchar(10) NOT NULL,
+  PRIMARY KEY (`id_account`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -35,7 +36,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES ('huongnt','abcdef'),('hvan','an123'),('nguyenvana','aaaaa'),('nguyenvanb','bbbbb'),('nguyenvanc','ccccc'),('nguyenvand','ddddd'),('npbinh','binh012'),('nthuy','huy789'),('phuongdt','pword123'),('thanhnv','123456'),('vntinh','tinh456');
+INSERT INTO `account` VALUES ('huongnt','abcdef','A001'),('hvan','an123','A002'),('nguyenvana','aaaaa','A003'),('nguyenvanb','bbbbb','A004'),('nguyenvanc','ccccc','A005'),('nguyenvand','ddddd','A006'),('npbinh','binh012','A007'),('nthuy','huy789','A008'),('phuongdt','pword123','A009'),('thanhnv','123456','A010'),('vntinh','tinh456','A011');
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -174,7 +175,7 @@ CREATE TABLE `detail_prn` (
 
 LOCK TABLES `detail_prn` WRITE;
 /*!40000 ALTER TABLE `detail_prn` DISABLE KEYS */;
-INSERT INTO `detail_prn` VALUES ('PRN001','D001',10,20000000.00),('PRN002','D002',5,30000000.00);
+INSERT INTO `detail_prn` VALUES ('PRN001','D001',10,20000000.00),('PRN001','D002',7,22.00),('PRN002','D002',5,30000000.00);
 /*!40000 ALTER TABLE `detail_prn` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -327,10 +328,10 @@ CREATE TABLE `staff` (
   `phone_staff` varchar(20) DEFAULT NULL,
   `birthDate_staff` date DEFAULT NULL,
   `position` varchar(20) DEFAULT NULL,
-  `username` varchar(50) DEFAULT NULL,
+  `id_account` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id_staff`),
-  KEY `username` (`username`),
-  CONSTRAINT `staff_ibfk_1` FOREIGN KEY (`username`) REFERENCES `account` (`username`)
+  KEY `account_ibfk_1_idx` (`id_account`),
+  CONSTRAINT `account_ibfk_1` FOREIGN KEY (`id_account`) REFERENCES `account` (`id_account`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -340,7 +341,7 @@ CREATE TABLE `staff` (
 
 LOCK TABLES `staff` WRITE;
 /*!40000 ALTER TABLE `staff` DISABLE KEYS */;
-INSERT INTO `staff` VALUES ('S001','Nguyễn Văn Thành','0912345678','1985-03-15','Quản lý','thanhnv'),('S002','Nguyễn Thị Hương','0987654321','1990-06-12','Nhân viên bán hàng','huongnt'),('S003','Đỗ Thị Phương','0901234567','1993-08-23','Kế toán','phuongdt'),('S004','Nguyễn Phương Bình','0456789123','2003-03-03','Nhân viên bán hàng','npbinh'),('S005','Võ Ngọc Tính','0234567891','2003-02-02','Nhân viên bán hàng','vntinh'),('S006','Nguyễn Trinh Huy','0345678912','2003-03-03','Nhân viên bán hàng','nthuy'),('S007','Huỳnh Văn An','0123456789','2003-01-01','Nhân viên bán hàng','hvan');
+INSERT INTO `staff` VALUES ('S001','Nguyễn Văn Thành','0912345678','1985-03-15','Quản lý','A010'),('S002','Nguyễn Thị Hương','0987654321','1990-06-12','Nhân viên bán hàng','A001'),('S003','Đỗ Thị Phương','0901234567','1993-08-23','Kế toán','A009'),('S004','Nguyễn Phương Bình','0456789123','2003-03-03','Nhân viên bán hàng','A007'),('S005','Võ Ngọc Tính','0234567891','2003-02-02','Nhân viên bán hàng','A011'),('S006','Nguyễn Trinh Huy','0345678912','2003-03-03','Nhân viên bán hàng','A008'),('S007','Huỳnh Văn An','0123456789','2003-01-01','Nhân viên bán hàng','A002');
 /*!40000 ALTER TABLE `staff` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -382,4 +383,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-10-24 13:14:20
+-- Dump completed on 2024-11-08  7:38:59

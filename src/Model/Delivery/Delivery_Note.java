@@ -100,6 +100,7 @@ public class Delivery_Note { // class phiếu xuất kho sản phẩm đến kh�
     }
     
     
+    // lấy delivery note theo id
     public Delivery_Note getDN_MySQL(String id) {
     java.sql.Connection conn = null;
     PreparedStatement pstmt = null;
@@ -108,12 +109,13 @@ public class Delivery_Note { // class phiếu xuất kho sản phẩm đến kh�
     try {
         Model.Connect.Connection c = new Connection();
         conn = c.getJDBC();
-        String sql = "SELECT * FROM Delivery_Note WHERE id_dn = ?";
+        String sql = "SELECT * FROM deliverynote WHERE id_deliverynote = ?";
         pstmt = conn.prepareStatement(sql);
         pstmt.setString(1, id);
         rs = pstmt.executeQuery();
         if (rs.next()) {
-            String id_dn = rs.getString("id_dn");
+            
+            String id_dn = rs.getString("id_deliverynote");
             String id_staff = rs.getString("id_staff");
             String id_customer = rs.getString("id_customer");
             
