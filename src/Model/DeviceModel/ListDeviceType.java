@@ -162,7 +162,19 @@ public class ListDeviceType {
         return newDeviceTypeList;
     }
     
-    
+        public Device_Type findDeviceTypeById(String id) {
+    // Lấy danh sách thiết bị từ cơ sở dữ liệu
+    ArrayList<Device_Type> deviceTypes = getDeviceTypesFromDatabase();
+
+    // Duyệt qua danh sách và tìm loại thiết bị có id_type tương ứng
+    for (Device_Type deviceType : deviceTypes) {
+        if (deviceType.getIdType().equalsIgnoreCase(id)) {
+            return deviceType; // Trả về đối tượng Device_Type nếu tìm thấy
+        }
+    }
+
+    return null; // Nếu không tìm thấy, trả về null
+}
     // done
     public static void main(String[] args){
         ListDeviceType l = new ListDeviceType();
