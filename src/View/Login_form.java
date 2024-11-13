@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import Model.UserModel.*;
+import View.PR_GUI.Input_Product_Receipt_GUI;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -127,26 +128,25 @@ public class Login_form extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_Input_usernameActionPerformed
 
+    
+    // check form đăng nhập và lưu session management
     private void Login_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Login_buttonActionPerformed
-        // TODO add your handling code here:
-        try {
-            String username = new String(this.Input_username.getText());
-            String password = new String(this.Input_password.getPassword());
-            LoginControler controller = new LoginControler();
-            boolean result = controller.CheckLoginState(username, password);
+        String username = new String(Input_username.getText());
+        String passwd = new String(Input_password.getText());
         
-            if (result == true) {
-                
-            } else {
-                System.out.println("False");
-            }
+        User_Account userAccount = new User_Account();
+        boolean isLoggedIn = userAccount.Check_Account(username, passwd);
         
-        } catch(Exception e){
-            System.out.println(e.getMessage());
-        }
+        if (isLoggedIn) {
+            User_Account loggedInUser = Session_account.getInstance().getLoggedInUser();
+            this.setVisible(false);
+            new Input_Product_Receipt_GUI().setVisible(isLoggedIn);
+        } 
+        
     }//GEN-LAST:event_Login_buttonActionPerformed
 
-    private void setStateInputField(){ // hàm kiểm tra trạng thái nhập liệu có đúng không
+    
+    private void setStateInputField(){
         
     }
     

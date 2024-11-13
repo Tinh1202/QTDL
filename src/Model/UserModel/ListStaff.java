@@ -82,7 +82,7 @@ public class ListStaff {
                 String position = rs.getString("position");
                 String id_account = rs.getString("id_account");
                 
-                User_Account account = new User_Account().getAccount_MySQL(id_account);
+                User_Account account = new User_Account().getAccount_Mysql(id_account);
                                
                 Staff staff = new Staff(id, fullname, phoneNumber, birthDate, position, account);
                 listStaff.add(staff);
@@ -129,7 +129,7 @@ public class ListStaff {
             
             String id_account = rs.getString("id_account");
             
-            User_Account account = new User_Account().getAccount_MySQL(id_account);
+            User_Account account = new User_Account().getAccount_Mysql(id_account);
             
             st = new Staff(id_staff, fullname_staff, phone_staff, staff_birthdate, position, account);
         }
@@ -205,9 +205,9 @@ public class ListStaff {
         newList.add(new Staff(staff));
         return newList;
     }
-    
-    
    
+    
+    
     
     public static void main(String[] args){
         Staff st = new Staff(new ListStaff().Staff_MySQL("STF001"));
@@ -217,7 +217,7 @@ public class ListStaff {
         
         for(Staff s : lst_staff){
             System.out.println(s.toString()); // done
-            System.out.println(s.getAccount().toString());
+//            System.out.println(s.getAccount().toString());
         }
     }
  }
