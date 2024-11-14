@@ -195,12 +195,7 @@ public class ListDetailDN {
         return lst_ddn_new;
     }
     
-    public ArrayList<Detail_DeliveryNote> AddDDNToList(Detail_DeliveryNote ddn) {
-        Detail_DeliveryNote ddn_new = new Detail_DeliveryNote(ddn);
-        this.ListDDN.add(ddn_new);
-        this.length = this.ListDDN.size();
-        return this.ListDDN;
-    }  
+    
     
     // done
     public static void main(String[] args){
