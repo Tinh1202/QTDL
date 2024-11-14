@@ -10,7 +10,7 @@ public class Connection {
 
 
     private final String username = "root";  // Thay thế bằng username của bạn
-    private final String password = "tvo229033@gmail";  // Thay thế bằng mật khẩu của bạn
+    private final String password = "123456789";  // Thay thế bằng mật khẩu của bạn
     
     // Phương thức kết nối tới MySQL
     public java.sql.Connection getJDBC() throws SQLException {
@@ -22,5 +22,24 @@ public class Connection {
             System.out.println("Lỗi kết nối: " + e.getMessage());
         }
         return conn;
+    }
+    public int getRowCount(String tableName) {
+        int rowCount = 0;
+        try (java.sql.Connection conn = getJDBC()) {  // Sử dụng rõ ràng java.sql.Connection
+            Statement stmt = conn.createStatement();
+            String query = "SELECT COUNT(*) FROM " + tableName;  // Truy vấn số dòng trong bảng
+            ResultSet rs = stmt.executeQuery(query);
+
+            if (rs.next()) {
+                rowCount = rs.getInt(1);  // Lấy số lượng dòng từ kết quả truy vấn
+            }
+        } catch (SQLException e) {
+            System.out.println("Lỗi khi lấy thông tin số dòng: " + e.getMessage());
+        }
+        return rowCount;  // Trả về số dòng
+    }
+    public static void main(String args[]) throws SQLException{
+        Connection a = new Connection();
+        a.getJDBC();
     }
 }
