@@ -64,14 +64,14 @@ public class ListDetailDN {
             Model.Connect.Connection c = new Connection();
             conn = c.getJDBC();
             stmt = conn.createStatement();
-            String sql = "SELECT * FROM Detail_DeliveryNote;"; // Thay "users" bằng bảng của bạn
+            String sql = "SELECT * FROM detail_deliverynote;"; // Thay "users" bằng bảng của bạn
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
-                String id_dn = new String(rs.getString("id_dn"));
+                String id_detail_deliverynote = new String(rs.getString("id_detail_deliverynote"));
+                String id_dn = new String(rs.getString("id_deliverynote"));
                 String id_device = new String(rs.getString("id_device"));
                 int quantity = rs.getInt("quantity");
-                double price = rs.getDouble("price");
-                Detail_DeliveryNote ddn = new Detail_DeliveryNote(id_dn, id_device, quantity, price);
+                Detail_DeliveryNote ddn = new Detail_DeliveryNote(id_detail_deliverynote, id_dn, id_device, quantity);
                 listDDN.add(ddn);
             }
         } catch (SQLException e) {
@@ -91,17 +91,18 @@ public class ListDetailDN {
     
     public ArrayList<Detail_DeliveryNote> ListDDN_MySQL(String id_dn) {
         ArrayList<Detail_DeliveryNote> listDDN = new ArrayList<Detail_DeliveryNote>();  
-        String sql = "SELECT * FROM Detail_DeliveryNote WHERE id_dn = ?"; // Sử dụng câu truy vấn với tham số
+        String sql = "SELECT * FROM detail_deliverynote WHERE id_deliverynote = ?"; // Sử dụng câu truy vấn với tham số
         try (java.sql.Connection conn = new Model.Connect.Connection().getJDBC();
             PreparedStatement stmt = conn.prepareStatement(sql)) {  
             stmt.setString(1, id_dn); // Truyền tham số vào câu truy vấn
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    String id_dn_new = new String(rs.getString("id_dn"));
+                    String id_detail_deliverynote = new String(rs.getString("id_detail_deliverynote"));
+                    String id_dn_new = new String(rs.getString("id_deliverynote"));
                     String id_device = new String(rs.getString("id_device"));
                     int quantity = rs.getInt("quantity");
-                    double price = rs.getDouble("price");
-                    Detail_DeliveryNote ddn = new Detail_DeliveryNote(id_dn_new, id_device, quantity, price);
+//                    double price = rs.getDouble("price");
+                    Detail_DeliveryNote ddn = new Detail_DeliveryNote(id_detail_deliverynote, id_dn_new, id_device, quantity);
                     listDDN.add(ddn);
                 }
             }
@@ -118,7 +119,7 @@ public class ListDetailDN {
             System.out.println("Id delivery note: " + ddn.getId_dn() + "\n");
             System.out.println("Id device: " + ddn.getId_device() + "\n");
             System.out.println("Quantity: " + ddn.getQuantity() + "\n");
-            System.out.println("Price: " + ddn.getPrice() + "\n");
+//            System.out.println("Price: " + ddn.getPrice() + "\n");
         } 
     }
     
@@ -173,18 +174,18 @@ public class ListDetailDN {
         return new ArrayList<Detail_DeliveryNote>(lst_ddn_new);
     }
     
-    public ArrayList<Detail_DeliveryNote> DeleteIdDNFromList(ArrayList<Detail_DeliveryNote> lst_ddn, double price) { // xóa theo price
-        ArrayList lst_ddn_new = new ArrayList(lst_ddn);
-        
-        Iterator<Detail_DeliveryNote> iterator = lst_ddn_new.iterator();
-        while (iterator.hasNext()) {
-            Detail_DeliveryNote ddn = iterator.next();
-            if (ddn.getPrice()== price) {
-                iterator.remove();
-            }
-        }
-        return new ArrayList<Detail_DeliveryNote>(lst_ddn_new);
-    }
+//    public ArrayList<Detail_DeliveryNote> DeleteIdDNFromList(ArrayList<Detail_DeliveryNote> lst_ddn, double price) { // xóa theo price
+//        ArrayList lst_ddn_new = new ArrayList(lst_ddn);
+//        
+//        Iterator<Detail_DeliveryNote> iterator = lst_ddn_new.iterator();
+//        while (iterator.hasNext()) {
+//            Detail_DeliveryNote ddn = iterator.next();
+//            if (ddn.getPrice()== price) {
+//                iterator.remove();
+//            }
+//        }
+//        return new ArrayList<Detail_DeliveryNote>(lst_ddn_new);
+//    }
     
     public ArrayList<Detail_DeliveryNote> AddDDNToList(ArrayList<Detail_DeliveryNote> lst_ddn, Detail_DeliveryNote ddn){
         ArrayList<Detail_DeliveryNote> lst_ddn_new = new ArrayList<Detail_DeliveryNote>(lst_ddn);

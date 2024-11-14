@@ -72,15 +72,13 @@ public class ListProduct_Receipt {
         String sql = "SELECT * FROM product_receipt;"; // bảng phiếu nhập -> chọn tất cả các record
         rs = stmt.executeQuery(sql);
         while (rs.next()) {
-            String id_prn = rs.getString("id_prn");
+            String id_prn = rs.getString("id_product_receipt");
             LocalDateTime date_import = rs.getTimestamp("date_import").toLocalDateTime();
             String id_staff = rs.getString("id_staff");
             String id_supplier = rs.getString("id_supplier");
             
             // tạo đối tượng các chi tiết phiếu mỗi sản phẩm có id = id_prn
-            ArrayList<Detail_PRN> list_detailPRN = new ArrayList<>(
-                    new ListDetailPRN().ListDPRN_MySQL(id_prn)
-            );
+            ArrayList<Detail_PRN> list_detailPRN = new ListDetailPRN().ListDPRN_MySQL(id_prn);
             
             Staff st = new ListStaff().Staff_MySQL(id_staff);
             Supplier sup = new ListSupplier().getSupplier_MySQL(id_supplier);
@@ -118,7 +116,6 @@ public class ListProduct_Receipt {
             System.out.println("Date import: " + pr.getDateImport() + "\n");
             System.out.println("staff: " + pr.get_staff().getFullname() + "\n");
             System.out.println("supplier: " + pr.get_supplier().getNameSupplier() + "\n");
-            System.out.println("Detail PRN: " + pr.getListDetailPRN().toString() + "\n");
         } 
     }
     
@@ -196,11 +193,17 @@ public class ListProduct_Receipt {
 //        return lst_pr_new;
 //    }
     
+    
     // done
     public static void main(String[] args){
         ListProduct_Receipt a = new ListProduct_Receipt();
         ArrayList<Product_Receipt> lst = a.ListPR_MySQL();
-        a.DisplayListPR();
+        
+        for (Product_Receipt p : lst){
+            for (Detail_PRN d : p.getListDetailPRN()){
+                System.out.println(d.getIdDetail_PR());
+            }
+        }
         
     }
 }

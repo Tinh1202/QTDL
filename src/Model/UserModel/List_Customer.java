@@ -80,8 +80,8 @@ public class List_Customer {
                 String id = rs.getString("id_customer");
                 String fullname = rs.getString("fullname_customer");
                 String phoneNumber = rs.getString("phone_customer");
-                LocalDate birthDate = rs.getDate("birthDate").toLocalDate();
-                String address = rs.getString("address");
+                LocalDate birthDate = rs.getDate("birthDate_customer").toLocalDate();
+                String address = rs.getString("address_customer");
                 Customer customer = new Customer(id, fullname, phoneNumber, birthDate, address);
                 listCustomer.add(customer);
             }
@@ -122,8 +122,8 @@ public class List_Customer {
             String fullname_customer = rs.getString("fullname_customer");
             String phone_customer = rs.getString("phone_customer");
             
-            LocalDate birthDate = rs.getDate("birthDate").toLocalDate();
-            String address = rs.getString("address");
+            LocalDate birthDate = rs.getDate("birthDate_customer").toLocalDate();
+            String address = rs.getString("address_customer");
             customer = new Customer(id_customer_n, fullname_customer, phone_customer, birthDate, address);
         }
     } catch (SQLException e) {
@@ -201,7 +201,7 @@ public class List_Customer {
     }
     
     public static void main(String[] args){
-        Customer c = new List_Customer().getCustomer_MySQL("C001"); // done
+        Customer c = new List_Customer().getCustomer_MySQL("CUST001"); // done
         System.out.println(c.toString());
         
         

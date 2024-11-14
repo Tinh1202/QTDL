@@ -13,24 +13,28 @@ import Model.UserModel.Person;
 import java.util.ArrayList;
 import java.time.*;
 public class Staff extends Person {
+    private User_Account account;
     private String position;
 
     // Mặc định constructor
     public Staff() {
         super();
+        this.account = new User_Account();
         this.position = new String("");
     }
 
     // Tham số constructor
-    public Staff(String id, String fullname, String phone_number, LocalDate birthDate, String position) {
+    public Staff(String id, String fullname, String phone_number, LocalDate birthDate, String position, User_Account account) {
         super(id, fullname, phone_number, birthDate);
+        this.account = account;
         this.position = position;
     }
 
     // Sao chép constructor
     public Staff(Staff s) {
         super(s.getId(), s.getFullname(), s.getPhone_number(), s.getBirthDate());
-        this.position = s.getPosition();
+        this.account = s.account;
+        this.position = s.position;
     }
     
     /*
@@ -38,7 +42,15 @@ public class Staff extends Person {
     */
     
     // Getter for position
-   
+    public void setAccount(User_Account account){
+        this.account = account;
+    }
+    
+    public User_Account getAccount(){
+        return this.account;
+    }
+    
+    
     public String getPosition() {
         return new String(this.position);
     }
