@@ -14,6 +14,9 @@ import Model.Delivery.Delivery_Note;
 import Model.Delivery.ListDeliveryNote;
 import Model.UserModel.Customer;
 import Model.UserModel.List_Customer;
+import Model.UserModel.Session_account;
+import Model.UserModel.Staff;
+import Model.UserModel.User_Account;
 import com.mysql.cj.jdbc.CallableStatement;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -35,6 +38,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
 /**
  *
  * @author OS
@@ -52,9 +56,15 @@ public class Export_Note extends javax.swing.JFrame {
     private ListDetailDN newListDDN;
     private ListDeliveryNote newListDN;
     private Delivery_Note deliveryNote;
-
+    Staff staff = new Staff();
     public Export_Note() {
         initComponents();
+        if (Session_account.getInstance().isLoggedIn()) {
+            User_Account loggedInUser = Session_account.getInstance().getLoggedInUser();
+            staff = new Staff().accessAccountInfo();
+        }
+        
+        jTextField1.setText(staff.getId());
         jTextField1.setEditable(false);
         jLabel1.setFocusable(true);
 
@@ -374,8 +384,8 @@ public class Export_Note extends javax.swing.JFrame {
             "Customer phone number: " + jTextField3.getText()    
         };
         String[] lines2 = {
-            "Staff name: Tô Văn Hưởng",
-            "Staff id: STAF001"
+            "Staff name: " + staff.getFullname(),
+            "Staff id: " + staff.getId()
         };       
         for (String line : lines1) {
             int lineWidth = g.getFontMetrics().stringWidth(line);
@@ -860,7 +870,7 @@ public class Export_Note extends javax.swing.JFrame {
                 CallableStatement stmtDeliveryNote = (CallableStatement) conn.prepareCall(sqlDeliveryNote);
                 String id_dn = newIdDN(this.listDN.size());
                 System.out.println(id_dn);
-                String id_staff = "STF002";
+                String id_staff = jTextField1.getText();
                 String id_customer = getIdCustomerFromNamePhone(jTextField2.getText().trim(), jTextField3.getText().trim());
                 LocalDateTime date_shipment = LocalDateTime.now();
                 stmtDeliveryNote.setString(1, id_dn);
