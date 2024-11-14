@@ -39,6 +39,13 @@ public class Device {
         this.dv = dv;
         this.price = price;
     }
+    public Device(String id_device, String name_device, Device_Type dv, double price) {
+    this.id_device = new String(id_device);
+    this.name_device = new String(name_device);
+    this.lst_spec = new ListSpecification(); // Khởi tạo mặc định nếu không cần thiết
+    this.dv = dv;
+    this.price = price;
+}
     //CONTRUCTOR COPY --> Sao chép tất cả các thuộc tính của đối tượng đó
     public Device (Object device){
         if (device instanceof Device) { //Kiểm tra đối tượng device có phải kiểu Device
@@ -62,8 +69,9 @@ public class Device {
     public String getIdDevice(){
         return new String(this.id_device);
     }
-    public String setIdDevice(String id_device){
-        return new String(this.id_device);
+    public void setIdDevice(String id_device){
+        this.id_device = new String(id_device);
+        
     }
     
     public String getNameDevice(){
@@ -120,4 +128,5 @@ public class Device {
         Device d = new Device(id, name, lst_spec, dt, price);
         System.out.println(d.toString());
     }
+    
 }
