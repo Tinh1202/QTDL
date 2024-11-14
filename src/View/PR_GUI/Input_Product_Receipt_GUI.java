@@ -4,6 +4,8 @@ package View.PR_GUI;
 
 
 
+import Control.Input_Pr_controller;
+import Control.input_detail_controller;
 import Model.Delivery.Detail_PRN;
 import Model.Delivery.ListDetailPRN;
 import Model.Delivery.ListProduct_Receipt;
@@ -12,15 +14,41 @@ import Model.DeviceModel.Device;
 import Model.DeviceModel.Device_Type;
 import Model.DeviceModel.ListDevice;
 import Model.DeviceModel.ListDeviceType;
+import Model.DeviceModel.ListSpecification;
+import Model.DeviceModel.ListSupplier;
+import Model.DeviceModel.Specification;
 import Model.DeviceModel.Supplier;
+import Model.UserModel.ListStaff;
+import Model.UserModel.Session_account;
 import Model.UserModel.Staff;
+import Model.UserModel.User_Account;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.security.Timestamp;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Random;
+import javax.swing.JFormattedTextField;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -36,100 +64,244 @@ public class Input_Product_Receipt_GUI extends javax.swing.JFrame {
     /**
      * Creates new form Input_Product_Receipt_GUI
      */
+    ArrayList<Detail_PRN> lst_detail_prn = new ArrayList<Detail_PRN>();
+    Staff staff = new Staff();
+    Detail_PRN selectedDetail = null;    
     public Input_Product_Receipt_GUI() {
         initComponents();
         
-        setResizable(false);
+        // lấy các danh sách phiếu trong csdl vào bảng 
+        List_PR_table.setModel((new Input_Pr_controller().setDefaultTable()));
         
-        String[] columns_list_pr = {"ID Product Receipt", "Date import", "Supplier", "Total cost"};
-        DefaultTableModel model = new DefaultTableModel(columns_list_pr, 0) {
+        // set ID random cho phiếu nhập
+        id_pr_input.setText(new Input_Pr_controller().random_id_product_receipt());
+        
+        // set datetime cho phiếu
+        time_label.setText(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE));
+
+        
+        // set default table detail product receipt
+        List_detail_PR_table.setModel(new input_detail_controller().DefaultTable());
+        
+        // set total price chi tiết phiếu nhập mặc định bằng 0
+        total_price_input.setText(Double.toString(0.0));
+        
+        // khởi tạo đối tượng chứa mảng ListDetail_PRN
+        final ListDetailPRN list_detail_prn = new ListDetailPRN();
+        
+        // set thông tin staff nhân viên nhập phiếu từ session
+        if (Session_account.getInstance().isLoggedIn()) {
+            User_Account loggedInUser = Session_account.getInstance().getLoggedInUser();
+            staff = new Staff().accessAccountInfo();
+        }
+        jTextArea1.setText("========Staff========" + "\n"
+                + "Staff id: " + staff.getId() + "\n"
+                    + "Staff name: " + staff.getFullname() + "\n"
+                        + "Staff phone: " + staff.getPhone_number() + "\n"
+                                + "Staff position: " + staff.getPosition() + "\n"
+        
+        );
+        // kết thúc
+        
+        
+        // set lựa chọn supplier 
+        supplier_combobox.removeAllItems();
+        for (Supplier s : new ListSupplier().getSuppliersFromDatabase()){
+            supplier_combobox.addItem(s.getNameSupplier());
+        }
+        // kết thúc
+        
+        
+        // action nhập thông tin thiết bị muốn nhập
+        id_device_input.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // Tất cả các ô không thể chỉnh sửa
+            public void insertUpdate(DocumentEvent e) {
+               // lấy chuỗi id device thực hiện action
+               String id_device = id_device_input.getText();
+               Device device = new ListDevice().getDevice_MySQL(id_device);
+               
+               // cập nhật thông tin của thiết bị lên các component tương ứng
+               device_name_input.setText(device.getNameDevice()); // tên thiết bị
+               name_dt.setText(device.getDeviceType().getNameType()); // tên loại thiết bị
+               price_per_device_input.setText(Double.toString(device.getPrice()));
+               
             }
-        };
-        
-        ArrayList<Product_Receipt> lst_pr = new ArrayList<Product_Receipt>();
-        lst_pr = new ListProduct_Receipt().ListPR_MySQL(); // lấy ds phiếu nhập từ mysql
-        
-        for (Product_Receipt pr : lst_pr){
-            String id_pr = new String(pr.getId_PRN());
-            LocalDateTime date_import = pr.getDateImport();
-            Supplier sp = pr.get_supplier();
-            Staff staff = pr.get_staff();
-            ListDetailPRN lst_prn = new ListDetailPRN(pr.getListDetailPRN());
-            
-            double total_cost = 0.0;
-            for (Detail_PRN d : lst_prn.getListDPRN()){
-//                total_cost += d.getPrice();
-            }
-            
-            Object[] row = {
-                id_pr, 
-                date_import,
-                sp.getNameSupplier(),
-                new DecimalFormat("#.00").format(total_cost)
-            };
-            
-            model.addRow(row);
-        }
-        
-        List_PR_table.setModel(model);
-        
-        
-        String[] columns_detail_prn = {"ID product receipt", "ID device", "Device's name", "Number", "Total devices"};
-        DefaultTableModel model_detail = new DefaultTableModel(columns_detail_prn, 0){
+
             @Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // Tất cả các ô không thể chỉnh sửa
+            public void removeUpdate(DocumentEvent e) {
+                
             }
-        };
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                
+            }
         
-        List_detail_PR_table.setModel(model_detail);
+        });
         
         
-        time_label.setText(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE).toString());
+        // set sự kiện cho jspinner: total price tăng giảm theo số lượng * price thiết bị
+        number_spiner.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                int number = (int) number_spiner.getValue();
+                double price = Double.parseDouble(price_per_device_input.getText());
+                double total = price * number;
+
+                // Sử dụng DecimalFormat để định dạng total thành chuỗi với 2 chữ số thập phân
+                total_price_input.setText(new DecimalFormat("#.00").format(total));
+            }
+        });
+        // kết thúc
+        
+        // set sự kiện button reset
+        
+        reset_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // reset tạo id nhập phiếu mới
+                id_pr_input.setText(new Input_Pr_controller().random_id_product_receipt());
+                // set lại thời gian
+                time_label.setText(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                // reset lại id
+                id_device_input.setText("");
+                //reset device name
+                device_name_input.setText("");
+                
+                // reset lại type
+                name_dt.setText("");
+                price_per_device_input.setText("");
+                total_price_input.setText("0.0");
+                
+                // reset lại bảng list detail prn -> reset lại list_detail
+                List_detail_PR_table.setModel(new input_detail_controller().DefaultTable());
+                
+                lst_detail_prn = new ArrayList<>();
+                
+                supplier_combobox.setSelectedIndex(0);
+            }
+        });
+        // kết thúc
         
         
-        id_device_box.removeAllItems();
-        id_device_box.addItem("Choose");
-        available_device_box.removeAllItems();
-        available_device_box.addItem("Choose");
+        // thêm sự kiện cho nút add detail
+        // tạo mảng chứa các chi tiết phiếu nhập để hiển thị lên bảng
         
-        for (Device device : new ListDevice().getDevicesFromDatabase()){
-            id_device_box.addItem(device.getIdDevice());
-            available_device_box.addItem(device.getIdDevice());
+        add_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // tạo detail_prn 
+                //----------------
+                // tạo random id cho chi tiết phiếu
+                String id_detail_prn = new input_detail_controller().create_random_id();
+                String id_prn = id_pr_input.getText();
+                String id_device = id_device_input.getText();
+                int number = (int) number_spiner.getValue();
+                
+                Detail_PRN detail = new Detail_PRN(id_detail_prn, id_prn, id_device, number);
+                lst_detail_prn.add(detail);
+                // set cho bảng hiển thị lên các chi tiết phiếu (chưa cập nhật csdl)
+                List_detail_PR_table.setModel(new input_detail_controller().setDefaultTable(lst_detail_prn));
+            }
+            
+        });
+        
+        
+        
+        // thêm sự kiện cho button create -> cập nhật các chi tiết phiếu lên csdl và cập nhật phiếu nhập lên csdl
+        Create_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // insert các chi phiếu trong bảng detail vào bảng csdl 
+                
+                // insert product receipt trước
+                String id_pr = id_pr_input.getText();
+                
+                String timeText = time_label.getText();
+                
+                
+                
+                // lấy id của supplier
+                String name_supplier = (String) supplier_combobox.getSelectedItem();
+                Supplier supplier = new Supplier();
+                for (Supplier s : new ListSupplier().getSuppliersFromDatabase()){
+                    if (s.getNameSupplier().equals(name_supplier)){
+                        supplier = s;
+                        break;
+                    }
+                }
+                
+                Product_Receipt pr = new Product_Receipt(id_pr, LocalDateTime.now(), staff, supplier, lst_detail_prn);
+                
+//                System.out.println(pr.toString());
+                
+                // thêm pr vào csdl
+                new Input_Pr_controller().insert_product_receipt(pr);
+                
+                // thêm detail pr vào csdl
+                for (Detail_PRN detail : lst_detail_prn){
+                    new input_detail_controller().insert_detail_prn_into_mysql(detail);
+                }
+                
+                // reset lại bảng và array list detail
+                lst_detail_prn = new ArrayList<Detail_PRN>();
+                List_detail_PR_table.setModel(new input_detail_controller().DefaultTable());
+                
+                // reload lại bảng list pr
+                List_PR_table.setModel(new Input_Pr_controller().setDefaultTable());
+            }
+            
+        });
+        
+        // thêm sự kiện cho chọn row trong detail pr table
+       List_detail_PR_table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+    @Override
+    public void valueChanged(ListSelectionEvent event) {
+            if (!event.getValueIsAdjusting()) {
+                int selectedRow = List_detail_PR_table.getSelectedRow();
+
+                if (selectedRow != -1) {
+                    String id_detail_pr = List_detail_PR_table.getValueAt(selectedRow, 0).toString();
+                    String id_pr = List_detail_PR_table.getValueAt(selectedRow, 1).toString();
+                    String id_device = List_detail_PR_table.getValueAt(selectedRow, 2).toString();
+                    String name_device = List_detail_PR_table.getValueAt(selectedRow, 3).toString();
+                    int number = Integer.parseInt(List_detail_PR_table.getValueAt(selectedRow, 4).toString());
+
+                    // Lưu lại đối tượng Detail PR đã chọn
+                    selectedDetail = new Detail_PRN(id_detail_pr, id_pr, id_device, number);
+                }
+            }
         }
-        
-        devicetype_box.removeAllItems();
-        devicetype_box.addItem("Choose");
-        for (Device_Type dt : new ListDeviceType().getDeviceTypesFromDatabase()){
-            devicetype_box.addItem(dt.getNameType());
+    });
+
+// Thêm sự kiện cho nút xóa
+    Detele_button.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (selectedDetail != null) {
+                // Sử dụng Iterator để xóa phần tử khỏi danh sách
+                Iterator<Detail_PRN> iterator = lst_detail_prn.iterator();
+                while (iterator.hasNext()) {
+                    Detail_PRN detail = iterator.next();
+                    if (detail.getIdDetail_PR().equals(selectedDetail.getIdDetail_PR())) {
+                        iterator.remove(); // Xóa phần tử đã chọn
+                    }
+                }
+
+                // Cập nhật lại bảng với dữ liệu mới
+                List_detail_PR_table.setModel(new input_detail_controller().setDefaultTable(lst_detail_prn));
+
+                // Reset selectedDetail sau khi xóa
+                selectedDetail = null;
+            } else {
+                System.out.println("Vui lòng chọn một dòng để xóa.");
+            }
         }
-       
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        StringBuilder randomString = new StringBuilder();
-        Random random = new Random();
-        for (int i = 0; i < 3; i++) {
-            int index = random.nextInt(characters.length());
-            randomString.append(characters.charAt(index));
-        }
-        String id_new_prn = new String("PR" + randomString.toString());
-        id_pr_input.setText(id_new_prn);
+    });
         
-        
-        price_per_device_input.setText("0.0");
-//        double total_price = Double.valueOf(price_per_device_input.getText()) * (Integer) number_spiner.getValue();
-//
-//        total_price_input.setText(Double.toString(total_price));
         
     }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -148,11 +320,6 @@ public class Input_Product_Receipt_GUI extends javax.swing.JFrame {
         label4 = new java.awt.Label();
         device_name_input = new javax.swing.JTextField();
         label5 = new java.awt.Label();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        description_input = new javax.swing.JTextArea();
-        label6 = new java.awt.Label();
-        label8 = new java.awt.Label();
-        available_device_box = new javax.swing.JComboBox<>();
         number_spiner = new javax.swing.JSpinner();
         label9 = new java.awt.Label();
         label10 = new java.awt.Label();
@@ -160,9 +327,6 @@ public class Input_Product_Receipt_GUI extends javax.swing.JFrame {
         List_detail_PR_label = new java.awt.Label();
         List_PR_label = new java.awt.Label();
         reset_button = new javax.swing.JButton();
-        id_device_box = new javax.swing.JComboBox<>();
-        devicetype_box = new javax.swing.JComboBox<>();
-        device_type_input = new javax.swing.JTextField();
         label13 = new java.awt.Label();
         total_price_input = new javax.swing.JTextField();
         back_button = new javax.swing.JButton();
@@ -171,6 +335,11 @@ public class Input_Product_Receipt_GUI extends javax.swing.JFrame {
         Staff = new java.awt.Label();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        name_dt = new javax.swing.JTextField();
+        Detele_button = new javax.swing.JButton();
+        add_device_button = new javax.swing.JButton();
+        supplier_combobox = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -219,21 +388,6 @@ public class Input_Product_Receipt_GUI extends javax.swing.JFrame {
 
         label5.setText("Device type");
 
-        description_input.setColumns(20);
-        description_input.setRows(5);
-        jScrollPane3.setViewportView(description_input);
-
-        label6.setText("Description");
-
-        label8.setText("Available device");
-
-        available_device_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        available_device_box.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                available_device_boxActionPerformed(evt);
-            }
-        });
-
         label9.setText("Number");
 
         label10.setText("Price");
@@ -249,10 +403,6 @@ public class Input_Product_Receipt_GUI extends javax.swing.JFrame {
         List_PR_label.setText("List PR");
 
         reset_button.setText("Reset");
-
-        id_device_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        devicetype_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         label13.setText("Total price");
 
@@ -271,6 +421,14 @@ public class Input_Product_Receipt_GUI extends javax.swing.JFrame {
         jTextArea1.setRows(5);
         jScrollPane4.setViewportView(jTextArea1);
 
+        Detele_button.setText("Delete");
+
+        add_device_button.setText("Add device");
+
+        supplier_combobox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel1.setText("Supplier");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -278,76 +436,68 @@ public class Input_Product_Receipt_GUI extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(List_PR_label, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Create_button, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(List_detail_PR_label, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 134, Short.MAX_VALUE)))
+                            .addComponent(List_detail_PR_label, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(Create_button, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(Detele_button, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(time_label, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                            .addComponent(label4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(label3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(label2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
-                                        .addGap(0, 0, Short.MAX_VALUE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(back_button))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(id_device_input)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(id_device_box, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addComponent(device_name_input, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(device_type_input, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(devicetype_box, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(id_pr_input)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(label10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(label6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(label5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(label8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
-                                        .addComponent(label13, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                .addGap(141, 141, 141)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane3)
-                                    .addComponent(jScrollPane4)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(number_spiner, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(price_per_device_input, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(total_price_input, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(available_device_box, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(0, 0, Short.MAX_VALUE))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 136, Short.MAX_VALUE)
-                                .addComponent(cancel_button, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(add_button, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(reset_button, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(cancel_button, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(add_button, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(reset_button, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(Staff, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(label10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(label5, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                                .addComponent(label13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(label9, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(110, 110, 110)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Staff, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(label9, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(number_spiner, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(total_price_input, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(price_per_device_input, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(supplier_combobox, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(time_label, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(label4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(label3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(label2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(back_button))
+                            .addComponent(device_name_input, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(id_pr_input)
+                            .addComponent(id_device_input, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(name_dt)
+                                .addGap(110, 110, 110))
+                            .addComponent(add_device_button, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(18, 18, 18))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -367,9 +517,7 @@ public class Input_Product_Receipt_GUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(id_device_input, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(id_device_box, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(id_device_input, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(label4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -377,42 +525,45 @@ public class Input_Product_Receipt_GUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(devicetype_box, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(device_type_input)))
+                            .addComponent(name_dt, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGap(92, 92, 92)
+                                .addComponent(label10, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(add_device_button, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(price_per_device_input, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(1, 1, 1)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(label9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(number_spiner, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(label6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(label10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(price_per_device_input))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(label9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(number_spiner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(total_price_input, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(label13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(4, 4, 4)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(available_device_box, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(label8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(label13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(total_price_input, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(Staff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(supplier_combobox)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(39, 39, 39))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Create_button, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(Create_button, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
+                            .addComponent(Detele_button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(List_PR_label, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(add_button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(reset_button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -430,10 +581,6 @@ public class Input_Product_Receipt_GUI extends javax.swing.JFrame {
     private void price_per_device_inputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_price_per_device_inputActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_price_per_device_inputActionPerformed
-
-    private void available_device_boxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_available_device_boxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_available_device_boxActionPerformed
 
     private void Create_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Create_buttonActionPerformed
         // TODO add your handling code here:
@@ -476,25 +623,22 @@ public class Input_Product_Receipt_GUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Create_button;
+    private javax.swing.JButton Detele_button;
     private java.awt.Label List_PR_label;
     private javax.swing.JTable List_PR_table;
     private java.awt.Label List_detail_PR_label;
     private javax.swing.JTable List_detail_PR_table;
     private java.awt.Label Staff;
     private javax.swing.JButton add_button;
-    private javax.swing.JComboBox<String> available_device_box;
+    private javax.swing.JButton add_device_button;
     private javax.swing.JButton back_button;
     private javax.swing.JButton cancel_button;
-    private javax.swing.JTextArea description_input;
     private javax.swing.JTextField device_name_input;
-    private javax.swing.JTextField device_type_input;
-    private javax.swing.JComboBox<String> devicetype_box;
-    private javax.swing.JComboBox<String> id_device_box;
     private javax.swing.JTextField id_device_input;
     private javax.swing.JTextField id_pr_input;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTextArea jTextArea1;
     private java.awt.Label label1;
@@ -504,12 +648,12 @@ public class Input_Product_Receipt_GUI extends javax.swing.JFrame {
     private java.awt.Label label3;
     private java.awt.Label label4;
     private java.awt.Label label5;
-    private java.awt.Label label6;
-    private java.awt.Label label8;
     private java.awt.Label label9;
+    private javax.swing.JTextField name_dt;
     private javax.swing.JSpinner number_spiner;
     private javax.swing.JTextField price_per_device_input;
     private javax.swing.JButton reset_button;
+    private javax.swing.JComboBox<String> supplier_combobox;
     private java.awt.Label time_label;
     private javax.swing.JTextField total_price_input;
     // End of variables declaration//GEN-END:variables
