@@ -62,42 +62,84 @@ public class ListDeviceType {
 
     // Lấy danh sách loại thiết bị từ cơ sở dữ liệu
     
+//    public ArrayList<Device_Type> getDeviceTypesFromDatabase() {
+//        java.sql.Connection conn = null;
+//        Statement stmt = null;
+//        ResultSet rs = null;
+//        ArrayList<Device_Type> deviceTypes = new ArrayList<Device_Type>();
+//
+//        try {
+//            Model.Connect.Connection connection = new Connection();
+//            conn = connection.getJDBC();
+//            stmt = conn.createStatement();
+//
+//            String sql = "SELECT * FROM devicetype"; 
+//            rs = stmt.executeQuery(sql);
+//
+//            while (rs.next()) {
+//                String id_type = rs.getString("id_devicetype");
+//                String name_type = rs.getString("name_devicetype");
+//
+//                Device_Type deviceType = new Device_Type(id_type, name_type);
+//                deviceTypes.add(deviceType);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                if (rs != null) rs.close();
+//                if (stmt != null) stmt.close();
+//                if (conn != null) conn.close();
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        return new ArrayList<>(deviceTypes);
+//    }
+
     public ArrayList<Device_Type> getDeviceTypesFromDatabase() {
-        java.sql.Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        ArrayList<Device_Type> deviceTypes = new ArrayList<Device_Type>();
+    java.sql.Connection conn = null;
+    CallableStatement stmt = null;
+    ResultSet rs = null;
+    ArrayList<Device_Type> deviceTypes = new ArrayList<Device_Type>();
 
+    try {
+        // Kết nối tới cơ sở dữ liệu
+        Model.Connect.Connection connection = new Connection();
+        conn = connection.getJDBC();
+
+        // Gọi thủ tục đã định nghĩa trong cơ sở dữ liệu
+        String sql = "{CALL GetDeviceTypes()}";
+        stmt = conn.prepareCall(sql);
+
+        // Thực thi thủ tục
+        rs = stmt.executeQuery();
+
+        // Xử lý kết quả truy vấn
+        while (rs.next()) {
+            String id_type = rs.getString("id_devicetype");
+            String name_type = rs.getString("name_devicetype");
+
+            Device_Type deviceType = new Device_Type(id_type, name_type);
+            deviceTypes.add(deviceType);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
         try {
-            Model.Connect.Connection connection = new Connection();
-            conn = connection.getJDBC();
-            stmt = conn.createStatement();
-
-            String sql = "SELECT * FROM devicetype"; 
-            rs = stmt.executeQuery(sql);
-
-            while (rs.next()) {
-                String id_type = rs.getString("id_devicetype");
-                String name_type = rs.getString("name_devicetype");
-
-                Device_Type deviceType = new Device_Type(id_type, name_type);
-                deviceTypes.add(deviceType);
-            }
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+            if (conn != null) conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-
-        return new ArrayList<>(deviceTypes);
     }
 
+    return new ArrayList<>(deviceTypes);
+}
+
+    
     // Hiển thị danh sách loại thiết bị
     public void displayListDeviceType() {
         ArrayList<Device_Type> deviceTypes = getDeviceTypesFromDatabase();
