@@ -4,9 +4,13 @@
  */
 package View;
 
+import Control.add_user_controller;
+import Model.UserModel.ListStaff;
 import Model.UserModel.Staff;
 import Model.UserModel.User_Account;
 import java.awt.Event;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.PreparedStatement;
@@ -31,200 +35,199 @@ public class AddUser_Form extends javax.swing.JFrame {
      */
     public AddUser_Form() {
         initComponents();
+        setResizable(false);
+       
         
-        jButton1.addMouseListener(new MouseAdapter() {
+        // set position cho position combobox
+        position_combobox.removeAllItems();
+        for (Staff staff : new ListStaff().ListStaff_MySQL()){
+            position_combobox.addItem(staff.getPosition());
+        }
+        
+        
+        // thêm event action cho button add -> insert account -> insert staff
+        add_button.addActionListener(new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                // Tạo các trường nhập cho username và password
+            public void actionPerformed(ActionEvent e) {
+                // Tạo các trường input cho username, password và verify password
+                User_Account account = new User_Account();
                 JTextField usernameField = new JTextField(10);
                 JPasswordField passwordField = new JPasswordField(10);
+                JPasswordField verifyPasswordField = new JPasswordField(10);
 
-                // Tạo JPanel để chứa các trường nhập
+                // Tạo panel và thêm các trường input vào panel
                 JPanel panel = new JPanel();
                 panel.add(new JLabel("Username:"));
                 panel.add(usernameField);
                 panel.add(Box.createHorizontalStrut(15)); // Khoảng cách giữa các trường
                 panel.add(new JLabel("Password:"));
                 panel.add(passwordField);
+                panel.add(Box.createHorizontalStrut(15)); // Khoảng cách giữa các trường
+                panel.add(new JLabel("Verify Password:"));
+                panel.add(verifyPasswordField);
 
-                // Hiển thị JOptionPane với button "Enter"
-                int result = JOptionPane.showConfirmDialog(null, panel, 
-                        "Xác thực đăng nhập", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                // Hiển thị JOptionPane với panel
+                int result = JOptionPane.showConfirmDialog(null, panel, "Enter Username and Password", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-                // Kiểm tra nếu người dùng nhấn "Enter" (OK)
+                // Kiểm tra nếu người dùng nhấn OK
                 if (result == JOptionPane.OK_OPTION) {
                     String username = usernameField.getText();
                     String password = new String(passwordField.getPassword());
+                    String verifyPassword = new String(verifyPasswordField.getPassword());
 
-                    // Thực hiện xác thực (ví dụ đơn giản)
-                    User_Account ac = new User_Account().getAccount_MySQL(username, password);
-                    if (ac == null){
-                        System.out.println("Không chính xác");
+                    // Kiểm tra nếu password và verify password khớp nhau
+                    if (password.equals(verifyPassword)) {
+                        
+                        account.setIdAccount(new add_user_controller().create_id_account());
+                        account.setUsername(username);
+                        account.setPassword(password);
+                        
+                        new add_user_controller().insertAccount(account);
+                        
                     } else {
-                        String user_name = new String(jTextField1.getText());
-                        String pass = new String(jPasswordField1.getPassword());
-                        String ver_pass = new String(jPasswordField2.getPassword());
-                        
-                        java.sql.Connection conn = null;
-                        PreparedStatement stmt = null;
-                        ResultSet rs = null;
-                        User_Account account = null;  // Đặt thành null để chỉ tạo khi có kết quả
-                        
-                        
-                        if (pass.equals(ver_pass)){
-                            if (new User_Account().getAccount_MySQL(user_name, pass) != null){
-                                System.out.println("Tai khoan da ton tai!");
-                                jTextField1.setText("");
-                                jPasswordField1.setText("");
-                                jPasswordField2.setText("");
-                            } else {
-                                
-                                
-                                try {
-                                    Model.Connect.Connection c = new Model.Connect.Connection() {};
-                                    conn = c.getJDBC();
-
-                                    String sql = "insert into account (username, password) values (?, ?)";
-                                    stmt = conn.prepareStatement(sql);
-                                    stmt.setString(1, user_name);
-                                    stmt.setString(2, pass);
-
-                                    stmt.executeUpdate();
-                                    
-                                    jTextField1.setText("");
-                                    jPasswordField1.setText("");
-                                    jPasswordField2.setText("");
-                                    
-                                } catch (SQLException ex) {
-                                    ex.printStackTrace();
-                                } finally {
-                                    try {
-                                        if (rs != null) rs.close();
-                                        if (stmt != null) stmt.close();
-                                        if (conn != null) conn.close();
-                                    } catch (SQLException ex) {
-                                        ex.printStackTrace();
-                                    }
-                                }
-                                
-                                
-                                
-                            }
-                        } else {
-                            System.out.println("Mat khau khong khop!");
-                            jTextField1.setText("");
-                            jPasswordField1.setText("");
-                            jPasswordField2.setText("");
-                        }
-                        
+                        JOptionPane.showMessageDialog(null, "Passwords do not match. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
+                
+                
+                String id_staff = new add_user_controller().create_Staff_id();
+                String fullname_staff = fullname_input.getText();
+                String phone_staff = phone_input.getText();
+                LocalDate birthDate_staff = LocalDate.parse(birthDate_input.getText());
+                String position = (String) position_combobox.getSelectedItem();
+                
+                Staff st = new Staff(id_staff, fullname_staff, phone_staff, birthDate_staff, position, account);
+                
+                new add_user_controller().insertStaff(st);
+                
+                fullname_input.setText("");
+                phone_input.setText("");
+                birthDate_input.setText("");
+                position_combobox.setSelectedIndex(0);
+                
             }
-            
         });
         
-
-        jButton2.addMouseListener(new MouseAdapter(){
-            public void mouseClicked(MouseEvent e){
-                jTextField1.setText("");
-                jPasswordField1.setText("");
-                jPasswordField2.setText("");
+        
+        // thêm event cho reset button
+        
+        reset_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fullname_input.setText("");
+                phone_input.setText("");
+                birthDate_input.setText("");
+                position_combobox.setSelectedIndex(0);
+                 
             }
         });
+        
     }
-
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
-        jPasswordField1 = new javax.swing.JPasswordField();
-        jPasswordField2 = new javax.swing.JPasswordField();
-        label1 = new java.awt.Label();
-        label2 = new java.awt.Label();
-        label3 = new java.awt.Label();
-        jButton2 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        fullname_label = new javax.swing.JLabel();
+        fullname_input = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        phone_input = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        birthDate_input = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        position_combobox = new javax.swing.JComboBox<>();
+        add_button = new javax.swing.JButton();
+        reset_button = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("Thêm");
+        fullname_label.setText("Full name");
 
-        jPasswordField1.setToolTipText("");
-        jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
+        fullname_input.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPasswordField1ActionPerformed(evt);
+                fullname_inputActionPerformed(evt);
             }
         });
 
-        label1.setText("Username");
+        jLabel1.setText("Phone");
 
-        label2.setText("Password");
+        jLabel2.setText("Birthdate");
 
-        label3.setText("Verify password");
+        jLabel3.setText("Position");
 
-        jButton2.setText("Xóa");
+        position_combobox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        add_button.setText("Add");
+
+        reset_button.setText("Reset");
+
+        jButton3.setText("Back");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(63, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(label1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(label2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(label3, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE))
-                .addGap(28, 28, 28)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addContainerGap(95, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(add_button, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
-                    .addComponent(jPasswordField2)
-                    .addComponent(jPasswordField1)
-                    .addComponent(jTextField1))
-                .addGap(61, 61, 61))
+                        .addComponent(reset_button, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(fullname_label, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(fullname_input)
+                                .addComponent(phone_input)
+                                .addComponent(birthDate_input, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE))
+                            .addComponent(position_combobox, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(19, 19, 19))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(78, 78, 78)
-                        .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(14, 14, 14))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPasswordField2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addContainerGap()
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(fullname_label, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fullname_input, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(phone_input, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(birthDate_input, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(position_combobox, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(add_button, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                    .addComponent(reset_button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
+    private void fullname_inputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fullname_inputActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jPasswordField1ActionPerformed
+    }//GEN-LAST:event_fullname_inputActionPerformed
 
     /**
      * @param args the command line arguments
@@ -262,14 +265,17 @@ public class AddUser_Form extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JPasswordField jPasswordField2;
-    private javax.swing.JTextField jTextField1;
-    private java.awt.Label label1;
-    private java.awt.Label label2;
-    private java.awt.Label label3;
+    private javax.swing.JButton add_button;
+    private javax.swing.JTextField birthDate_input;
+    private javax.swing.JTextField fullname_input;
+    private javax.swing.JLabel fullname_label;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JTextField phone_input;
+    private javax.swing.JComboBox<String> position_combobox;
+    private javax.swing.JButton reset_button;
     // End of variables declaration//GEN-END:variables
 }
 

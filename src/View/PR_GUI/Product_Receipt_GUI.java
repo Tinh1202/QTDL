@@ -51,16 +51,18 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
         ArrayList<Product_Receipt> lst_pr = new ArrayList<Product_Receipt>();
         lst_pr = new ListProduct_Receipt().ListPR_MySQL(); // lấy ds phiếu nhập từ mysql
         
+        
         for (Product_Receipt pr : lst_pr){
             String id_pr = new String(pr.getId_PRN());
             LocalDateTime date_import = pr.getDateImport();
             Supplier sp = pr.get_supplier();
             Staff staff = pr.get_staff();
             ListDetailPRN lst_prn = new ListDetailPRN(pr.getListDetailPRN());
-            
             double total_cost = 0.0;
+            
             for (Detail_PRN d : lst_prn.getListDPRN()){
-//                total_cost += d.getPrice();
+                Device device = new ListDevice().getDevice_MySQL(d.getId_device());
+                total_cost += device.getPrice() * d.getNumber();
             }
             
             Object[] row = {
@@ -230,6 +232,16 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
                 T_Detail.setModel(model_detail);
             }
         });
+        
+        
+        // thêm sự kiện nhập phiếu -> chuyển sang giao diện input pr
+       Button_add_PR.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+                new Input_Product_Receipt_GUI().setVisible(true);
+            }
+        });
     }
 
     /**
@@ -249,8 +261,6 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         Area_DT = new javax.swing.JTextArea();
         Button_add_PR = new javax.swing.JButton();
-        Button_edit_PR = new javax.swing.JButton();
-        Button_del_PR = new javax.swing.JButton();
         TextField_search = new javax.swing.JTextField();
         Button_search = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -297,10 +307,6 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
             }
         });
 
-        Button_edit_PR.setLabel("Sửa Phiếu");
-
-        Button_del_PR.setText("Xóa Phiếu");
-
         TextField_search.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 TextField_searchActionPerformed(evt);
@@ -333,12 +339,7 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
                     .addComponent(Button_reset, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(Button_add_PR, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Button_edit_PR, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Button_del_PR, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Button_add_PR, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 475, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(TextField_search, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -369,9 +370,7 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
                             .addComponent(jScrollPane4))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
-                    .addComponent(Button_edit_PR, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(Button_add_PR, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(Button_del_PR, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(Button_reset))
                 .addGap(5, 5, 5))
         );
@@ -425,8 +424,6 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea Area_DT;
     private javax.swing.JButton Button_add_PR;
-    private javax.swing.JButton Button_del_PR;
-    private javax.swing.JButton Button_edit_PR;
     private javax.swing.JButton Button_reset;
     private javax.swing.JButton Button_search;
     private javax.swing.JTable T_Detail;

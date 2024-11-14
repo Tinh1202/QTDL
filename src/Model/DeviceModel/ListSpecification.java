@@ -19,8 +19,7 @@ import java.util.Iterator;
 
 public class ListSpecification {
     private ArrayList<Specification>  ListSpec;
-    private int length;
-
+    
     public ListSpecification() {
         this.ListSpec = new ArrayList<>();
     }

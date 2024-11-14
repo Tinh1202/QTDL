@@ -28,7 +28,7 @@ public class ListDeviceJFrame extends javax.swing.JFrame {
      */
     public ListDeviceJFrame() {
         initComponents();
-        
+        setResizable(false);
         device = new Device();
         deviceType = new Device_Type();
                 listDevice = new ListDevice();

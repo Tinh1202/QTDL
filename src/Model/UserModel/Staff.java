@@ -71,5 +71,47 @@ public class Staff extends Person {
                 ", position='" + position + '\'' +
                 '}';
     }
+    
+    
+    
+    public static Staff accessAccountInfo() {
+        // Kiểm tra xem người dùng có đang đăng nhập hay không
+        Staff staff_new = new Staff();
+
+        if (Session_account.getInstance().isLoggedIn()) {
+            // Lấy thông tin người dùng đã đăng nhập
+            User_Account loggedInUser = Session_account.getInstance().getLoggedInUser();
+            // Hiển thị thông tin người dùng đã đăng nhập
+            String id_account = loggedInUser.getIdAccount();
+            
+            for (Staff staff : new ListStaff().ListStaff_MySQL()){
+                if (id_account.equals(staff.getAccount().getIdAccount())) {
+                    staff_new = staff;
+                    break;
+                }
+            }
+        }
+        return staff_new;
+        
+    }
+    
+//    public static void main(String[] args){
+//        boolean isLoggedIn = new User_Account().Check_Account("vntinh", "root");
+//
+//        if (isLoggedIn) {
+//            System.out.println("Đăng nhập thành công!");
+//
+//            // Truy cập thông tin người dùng đã đăng nhập từ SessionManager
+//            User_Account loggedInUser = Session_account.getInstance().getLoggedInUser();
+//            System.out.println("Xin chào, " + loggedInUser.getUsername());
+//
+//            // Giả sử bạn muốn truy cập người dùng đã đăng nhập ở phần khác của ứng dụng
+//            Staff staff = accessAccountInfo();
+//            
+//            System.out.println(staff.getFullname());
+//        } else {
+//            System.out.println("Sai tài khoản hoặc mật khẩu.");
+//        }
+//    }
 }
 
