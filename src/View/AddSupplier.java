@@ -157,6 +157,7 @@ public class AddSupplier extends javax.swing.JFrame {
                 "ID supplier", "Name", "Address", "Phone", "Country"
             }
         ));
+        jTable2.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane2.setViewportView(jTable2);
 
         jTextField6.addActionListener(new java.awt.event.ActionListener() {
@@ -173,6 +174,11 @@ public class AddSupplier extends javax.swing.JFrame {
         });
 
         jButton3.setText("Delete");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -330,39 +336,7 @@ public class AddSupplier extends javax.swing.JFrame {
         jButton1.setText("Update");
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {
-        int row = jTable2.getSelectedRow();
-        if (row >= 0) {
-            jTextField1.setText(jTable2.getValueAt(row, 0).toString());
-            jTextField3.setText(jTable2.getValueAt(row, 1).toString());
-            jTextField2.setText(jTable2.getValueAt(row, 2).toString());
-            jTextField5.setText(jTable2.getValueAt(row, 3).toString());
-            jTextField6.setText(getCountryIdByName(jTable2.getValueAt(row, 4).toString()));
-            
-            isEditing = true;
-            editingId = jTable2.getValueAt(row, 0).toString();
-            jButton1.setText("Update");
-        }
-    }
-
-    private String getCountryIdByName(String countryName) {
-        for (Country country : arrCountry) {
-            if (country.getNameCountry().equals(countryName)) {
-                return country.getIdCountry();
-            }
-        }
-        return "";
-    }
-
-    private void clearForm() {
-        jTextField1.setText(createNewId(arrSupplier.size()));
-        jTextField3.setText("");
-        jTextField2.setText("");
-        jTextField5.setText("");
-        jTextField6.setText("");
-    }
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         int row = jTable2.getSelectedRow();
         if (row < 0) {
             JOptionPane.showMessageDialog(rootPane, "Vui lòng chọn supplier cần xóa!");
@@ -469,7 +443,41 @@ public class AddSupplier extends javax.swing.JFrame {
                 new AddSupplier().setVisible(true);
             }
         });
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {
+        int row = jTable2.getSelectedRow();
+        if (row >= 0) {
+            jTextField1.setText(jTable2.getValueAt(row, 0).toString());
+            jTextField3.setText(jTable2.getValueAt(row, 1).toString());
+            jTextField2.setText(jTable2.getValueAt(row, 2).toString());
+            jTextField5.setText(jTable2.getValueAt(row, 3).toString());
+            jTextField6.setText(getCountryIdByName(jTable2.getValueAt(row, 4).toString()));
+            
+            isEditing = true;
+            editingId = jTable2.getValueAt(row, 0).toString();
+            jButton1.setText("Update");
+        }
     }
+
+    private String getCountryIdByName(String countryName) {
+        for (Country country : arrCountry) {
+            if (country.getNameCountry().equals(countryName)) {
+                return country.getIdCountry();
+            }
+        }
+        return "";
+    }
+
+    private void clearForm() {
+        jTextField1.setText(createNewId(arrSupplier.size()));
+        jTextField3.setText("");
+        jTextField2.setText("");
+        jTextField5.setText("");
+        jTextField6.setText("");
+    }
+
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
