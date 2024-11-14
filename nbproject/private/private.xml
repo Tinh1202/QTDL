@@ -3,9 +3,17 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/D:/t1/QTDL/src/View/Export_Note.java</file>
             <file>file:/D:/t1/QTDL/src/View/AddCustomer_Form.java</file>
             <file>file:/D:/t1/QTDL/src/Model/DeviceModel/Device_Type.java</file>
+=======
+            <file>file:/E:/QTDL/src/View/PR_GUI/Input_Product_Receipt_GUI.java</file>
+            <file>file:/E:/QTDL/src/View/PR_GUI/Product_Receipt_GUI.java</file>
+            <file>file:/E:/QTDL/src/View/AddUser_Form.java</file>
+            <file>file:/E:/QTDL/src/Model/Delivery/Detail_PRN.java</file>
+            <file>file:/E:/QTDL/src/Model/DeviceModel/ListSpecification.java</file>
+>>>>>>> 5e835c5bb74cbead06ce7b05938a6bcb257b6113
         </group>
     </open-files>
 </project-private>
