@@ -129,7 +129,7 @@ public class Login_form extends javax.swing.JFrame {
     }//GEN-LAST:event_Input_usernameActionPerformed
 
     
-    // check form đăng nhập và lưu session management
+    // check form đăng nhập và lưu session management và điều hướng sang dash board
     private void Login_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Login_buttonActionPerformed
         String username = new String(Input_username.getText());
         String passwd = new String(Input_password.getText());
@@ -140,7 +140,7 @@ public class Login_form extends javax.swing.JFrame {
         if (isLoggedIn) {
             User_Account loggedInUser = Session_account.getInstance().getLoggedInUser();
             this.setVisible(false);
-            new Input_Product_Receipt_GUI().setVisible(isLoggedIn);
+            new Dash_board().setVisible(isLoggedIn);
         } 
         
     }//GEN-LAST:event_Login_buttonActionPerformed

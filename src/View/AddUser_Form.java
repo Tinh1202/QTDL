@@ -40,10 +40,10 @@ public class AddUser_Form extends javax.swing.JFrame {
         
         // set position cho position combobox
         position_combobox.removeAllItems();
-        for (Staff staff : new ListStaff().ListStaff_MySQL()){
-            position_combobox.addItem(staff.getPosition());
+        String[] lst_position = {"Manager", "Accountant", "Sales", "HR", "Engineer"};
+        for (String position : lst_position){
+            position_combobox.addItem(position);
         }
-        
         
         // thêm event action cho button add -> insert account -> insert staff
         add_button.addActionListener(new ActionListener() {
@@ -122,6 +122,14 @@ public class AddUser_Form extends javax.swing.JFrame {
             }
         });
         
+        // set event back button
+//        reset_button.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                 setVisible(false);
+//            }
+//        });
+        
     }
     
     @SuppressWarnings("unchecked")
@@ -138,7 +146,7 @@ public class AddUser_Form extends javax.swing.JFrame {
         position_combobox = new javax.swing.JComboBox<>();
         add_button = new javax.swing.JButton();
         reset_button = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        back_button = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -162,7 +170,7 @@ public class AddUser_Form extends javax.swing.JFrame {
 
         reset_button.setText("Reset");
 
-        jButton3.setText("Back");
+        back_button.setText("Back");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -191,14 +199,14 @@ public class AddUser_Form extends javax.swing.JFrame {
                 .addGap(19, 19, 19))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(back_button, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(back_button, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(fullname_label, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -266,10 +274,10 @@ public class AddUser_Form extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton add_button;
+    private javax.swing.JButton back_button;
     private javax.swing.JTextField birthDate_input;
     private javax.swing.JTextField fullname_input;
     private javax.swing.JLabel fullname_label;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

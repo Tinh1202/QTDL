@@ -816,7 +816,7 @@ public class Export_Note extends javax.swing.JFrame {
             jTextField2.setForeground(Color.GRAY); // Đổi lại màu chữ mờ
         } else if (checkNameCustomer(jTextField2.getText().trim())) {
             ArrayList<String> listphone = new ArrayList<>(getPhoneCustomer(jTextField2.getText().trim()));
-            String phone1 = listphone.getFirst();
+            String phone1 = listphone.get(0);
 
             if (listphone.size() == 1) {
                 jTextField3.setText(phone1);

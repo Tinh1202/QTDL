@@ -5,6 +5,7 @@
 package computer_management;
 
 import Model.DeviceModel.Country;
+import View.Login_form;
 /*import Model.Connect.Connection;*/
 
 /**
@@ -13,5 +14,9 @@ import Model.DeviceModel.Country;
  */
 public class Computer_Management {
     public static void main(String[] args){  
+        
+        java.awt.EventQueue.invokeLater(() -> {
+            new Login_form().setVisible(true);
+        });
     }       
 }
