@@ -24,6 +24,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -35,6 +36,8 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
     /**
      * Creates new form Product_Receipt_GUI
      */
+    Detail_PRN detail_prn = new Detail_PRN();
+    
     public Product_Receipt_GUI() {
         initComponents();
         setResizable(false);
@@ -80,7 +83,7 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
         
         
         // default table detail
-        String[] columnNames_detail = {"ID Receipt Note", "ID Device", "Name Device", "Quantity", "Total Devices"};
+        String[] columnNames_detail = {"ID detail pr", "ID pr", "ID Device", "Name Device", "Quantity", "Total Devices"};
         
         DefaultTableModel model_detail = new DefaultTableModel(columnNames_detail, 0){
             @Override
@@ -93,7 +96,8 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
         lst_dprn = new ListDetailPRN().ListDPRN_MySQL();
         
         for (Detail_PRN d : lst_dprn){
-            String id_dprn = new String(d.getId_prn());
+            String id_detail_prn = new String(d.getIdDetail_PR());
+            String id_prn = new String(d.getId_prn());
             String id_device = new String(d.getId_device());
             
             Device device = new ListDevice().getDevice_MySQL(id_device);
@@ -102,7 +106,8 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
             double total_price_device = number * device.getPrice();
             
             Object[] row = {
-                id_dprn, 
+                id_detail_prn,
+                id_prn, 
                 id_device, 
                 device.getNameDevice(),
                 number, 
@@ -144,7 +149,8 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
                 };
                   
                 for (Detail_PRN d_prn : lst_detail_prn){
-                    String id_dprn = new String(d_prn.getId_prn());
+                    String id_detail_prn = new String(d_prn.getIdDetail_PR());
+                    String idprn = new String(d_prn.getId_prn());
                     String id_device = new String(d_prn.getId_device());
                     Device d = new ListDevice().getDevice_MySQL(id_device);
                     
@@ -152,7 +158,8 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
                     double price_perdevice = number * d.getPrice();
                     
                     Object[] row = {
-                        id_dprn, 
+                        id_detail_prn,
+                        idprn, 
                         id_device, 
                         d.getNameDevice(),
                         number, 
@@ -173,19 +180,22 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int selectedRow = T_Detail.getSelectedRow(); // Lấy hàng được chọn
+                String id_detail_prn = new String(T_Detail.getValueAt(selectedRow, 0).toString());
+                String id_prn = new String(T_Detail.getValueAt(selectedRow, 1).toString());
+                String id_device = new String(T_Detail.getValueAt(selectedRow, 2).toString());
+                int number = Integer.parseInt(T_Detail.getValueAt(selectedRow, 4).toString());
                 
-                String id_device = new String(T_Detail.getValueAt(selectedRow, 1).toString());
+                detail_prn = new Detail_PRN(id_detail_prn, id_prn, id_device, number);
+              
+                
+                
                 
                 Device device = new ListDevice().getDevice_MySQL(id_device);
-                
                 String name_device = new String(device.getNameDevice());
-                
                 Device_Type dt = device.getDeviceType();
-                
                 ListSpecification lst_spec = device.getListSpec();
-                
                 String spec = new String("");
-                
+                                
                 double price_device = device.getPrice();
                 
                 for (Specification s : lst_spec.getListSpec()){
@@ -242,6 +252,17 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
                 new Input_Product_Receipt_GUI().setVisible(true);
             }
         });
+       
+       
+       // set event button edit
+       edit_button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                edit_detail_prn_GUI new_edit = new edit_detail_prn_GUI(detail_prn);
+                new_edit.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Chỉ đóng cửa sổ hiện tại
+                new_edit.setVisible(true);
+            }
+        });
     }
 
     /**
@@ -267,6 +288,7 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
         jTextArea2 = new javax.swing.JTextArea();
         Button_reset = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        edit_button = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -323,6 +345,8 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
 
         jButton1.setText("Sort");
 
+        edit_button.setText("Edit ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -336,7 +360,10 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)))
-                    .addComponent(Button_reset, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(edit_button, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(Button_reset, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(Button_add_PR, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -371,7 +398,8 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
                     .addComponent(Button_add_PR, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(Button_reset))
+                    .addComponent(Button_reset)
+                    .addComponent(edit_button))
                 .addGap(5, 5, 5))
         );
 
@@ -429,6 +457,7 @@ public class Product_Receipt_GUI extends javax.swing.JFrame {
     private javax.swing.JTable T_Detail;
     private javax.swing.JTable T_Product_Receipt;
     private javax.swing.JTextField TextField_search;
+    private javax.swing.JButton edit_button;
     private javax.swing.JButton jButton1;
     private javax.swing.JScrollBar jScrollBar1;
     private javax.swing.JScrollPane jScrollPane1;

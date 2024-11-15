@@ -38,7 +38,11 @@
                           <Component id="jScrollPane4" pref="259" max="32767" attributes="0"/>
                       </Group>
                   </Group>
-                  <Component id="Button_reset" min="-2" pref="143" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="edit_button" min="-2" pref="132" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="Button_reset" min="-2" pref="143" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -85,6 +89,7 @@
               <Group type="103" groupAlignment="3" max="-2" attributes="0">
                   <Component id="Button_add_PR" alignment="3" max="32767" attributes="0"/>
                   <Component id="Button_reset" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="edit_button" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
           </Group>
@@ -190,6 +195,11 @@
     <Component class="javax.swing.JButton" name="jButton1">
       <Properties>
         <Property name="text" type="java.lang.String" value="Sort"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="edit_button">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Edit "/>
       </Properties>
     </Component>
   </SubComponents>

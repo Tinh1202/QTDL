@@ -444,7 +444,7 @@ public class Export_Note extends javax.swing.JFrame {
         g.drawString("Staff", 544, yPosition + 60);
         g.dispose();
         // Đặt đường dẫn lưu ảnh
-        String a = "D:/t1/Invoices/";
+        String a = "E:/QTDL/src/bill/";
         String outputPath1 = a.concat(id_dn);
         String outputPath = new String(outputPath1.concat(".png"));
         try {
@@ -457,7 +457,7 @@ public class Export_Note extends javax.swing.JFrame {
             System.out.println("Lỗi khi lưu hóa đơn: " + e.getMessage());
         }
         JFrame frame = new JFrame("Hiển thị hóa đơn");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(width, height);
         // Tạo JPanel để vẽ ảnh
         JPanel panel = new JPanel() {
@@ -465,6 +465,7 @@ public class Export_Note extends javax.swing.JFrame {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g.drawImage(invoiceImage, 0, 0, this); // Vẽ ảnh lên JPanel
+                
             }
         };
         frame.add(panel); frame.setVisible(true);
@@ -842,7 +843,7 @@ public class Export_Note extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField2FocusLost
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        AddCustomer_Form dialog = new AddCustomer_Form(this, true);
+       AddCustomer_Form dialog = new AddCustomer_Form(this, true);
         dialog.setLocationRelativeTo(this); // Căn giữa
         dialog.setVisible(true); // Hiển thị popup
         String phone_number = dialog.sharePhoneNumber();
@@ -907,6 +908,7 @@ public class Export_Note extends javax.swing.JFrame {
                 model.setRowCount(0);
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "products not enough to sell");
             }
         } else {
             JOptionPane.showMessageDialog(this, "There are no products yet");

@@ -219,4 +219,46 @@ public class input_detail_controller {
     }
     
     
+    public void updateDetailPRN(Detail_PRN detail_prn) {
+    java.sql.Connection conn = null;
+    PreparedStatement stmt = null;
+
+        try {
+            // Kết nối cơ sở dữ liệu
+            Model.Connect.Connection c = new Model.Connect.Connection() {};
+            conn = c.getJDBC();
+            System.out.println("Kết nối thành công!");
+
+            // Kiểm tra giá trị các tham số đầu vào
+            System.out.println("ID Device: " + detail_prn.getId_device());
+            System.out.println("Quantity: " + detail_prn.getNumber());
+            System.out.println("ID Detail PR: " + detail_prn.getIdDetail_PR());
+
+            String sql = "UPDATE detail_product_receipt SET id_device = ?, quantity = ? WHERE id_detail_pr = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, detail_prn.getId_device());
+            stmt.setInt(2, detail_prn.getNumber());
+            stmt.setString(3, detail_prn.getIdDetail_PR());
+
+            int rowsUpdated = stmt.executeUpdate(); // Lấy số dòng cập nhật
+            if (rowsUpdated > 0) {
+                System.out.println("Cập nhật thành công! Số dòng cập nhật: " + rowsUpdated);
+            } else {
+                System.out.println("Không có dòng nào được cập nhật. Kiểm tra lại ID Detail PR.");
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.println("Cập nhật không thành công. Lỗi: " + ex.getMessage());
+
+        } finally {
+            // Đóng tài nguyên
+            try {
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 }
